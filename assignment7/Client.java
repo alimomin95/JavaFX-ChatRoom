@@ -59,6 +59,7 @@ public class Client {
 				try{
 					message = reader.readLine();
 				} catch (IOException e) {
+					System.out.println("failed");
 					message = null;
 				}			
 				if(message != null){
