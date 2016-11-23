@@ -7,8 +7,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-
 
 
 //client is initialized with an output text field and an input field
@@ -17,22 +15,28 @@ public class Client {
 	private Socket sock;
     private BufferedReader reader;
 	private PrintWriter writer;
-	private TextField incoming;
+	private TextArea incoming;
 	private TextArea outgoing;
 	
-	public Client(TextField reader, TextArea writer){
+	public Client(TextArea reader, TextArea writer){
 		this.incoming = reader;
 		this.outgoing = writer;
 	}
 	
 	
-	public void setUpNetworking(String address, int port) throws Exception {
-		sock = new Socket(address, port);
-		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
-		reader = new BufferedReader(streamReader);
-		writer = new PrintWriter(sock.getOutputStream());
-		Thread readerThread = new Thread(new incomingReader());
-		readerThread.start();
+	public void setUpNetworking(String address, int port){
+		try {
+			sock = new Socket(address, port);
+			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
+			reader = new BufferedReader(streamReader);
+			writer = new PrintWriter(sock.getOutputStream());
+			Thread readerThread = new Thread(new incomingReader());
+			readerThread.start();
+		}
+		catch (IOException e) {
+			System.out.println("cannot connect to server");
+			return;
+		}
 	}
 	
 	public void closeNetworking() throws IOException{
@@ -40,7 +44,9 @@ public class Client {
 	}
 
 	public void sendMessage(String message){
-        incoming.setText(incoming.getText() + message + "\n");
+		writer.println(message);
+		//for testing use this:
+        //incoming.setText(incoming.getText() + message + "\n");
 	}
 	
 	
@@ -52,10 +58,12 @@ public class Client {
 			while(true){
 				try{
 					message = reader.readLine();
-			        incoming.setText(incoming.getText() + message + "\n");
 				} catch (IOException e) {
-				
-				}				
+					message = null;
+				}			
+				if(message != null){
+					incoming.setText(incoming.getText() + message + "\n");
+				}					
 			}
 		}
 	}
