@@ -90,7 +90,7 @@ public class Main extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            primaryStage.setTitle("RSA Chat");
+            primaryStage.setTitle("AQ Chat");
             primaryStage.setScene(new Scene(root, 621, 469));
             primaryStage.setResizable(false);
             primaryStage.show();
