@@ -1,4 +1,3 @@
-//quinn test
 package assignment7;
 
 import javafx.event.EventHandler;
