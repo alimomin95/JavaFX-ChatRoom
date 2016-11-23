@@ -70,7 +70,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     	c = new Client(mainBody, messageBox);
-    	c.setUpNetworking("localhost", 5000);
+    	c.setUpNetworking("127.0.0.1", 5000);
     	
         messageBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -79,6 +79,9 @@ public class Controller implements Initializable {
                     String text = messageBox.getText();
                     ebutton(text);
                     messageBox.setText("");
+                }
+                else if (keyEvent.getCode() == KeyCode.ESCAPE){
+                	c.closeNetworking();
                 }
             }
         });

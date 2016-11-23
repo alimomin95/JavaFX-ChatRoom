@@ -39,8 +39,13 @@ public class Client {
 		}
 	}
 	
-	public void closeNetworking() throws IOException{
-		sock.close();
+	public void closeNetworking(){
+		try{
+			sock.close();
+		}
+		catch(IOException e){
+			System.out.println("Cannot disconnect");
+		}
 	}
 
 	public void sendMessage(String message){
@@ -54,17 +59,14 @@ public class Client {
 	private class incomingReader implements Runnable {
 		@Override
 		public void run() {
-			String message = null;
-			while(true){
-				try{
-					message = reader.readLine();
-				} catch (IOException e) {
-					System.out.println("failed");
-					message = null;
-				}			
-				if(message != null){
-					incoming.setText(incoming.getText() + message + "\n");
-				}					
+			String message;
+			try{
+				while ((message = reader.readLine()) != null){
+					incoming.appendText(message + "\n");
+				}
+			}
+			catch(IOException e){
+				e.printStackTrace();
 			}
 		}
 	}
