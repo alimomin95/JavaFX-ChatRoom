@@ -14,10 +14,11 @@ import javafx.scene.text.TextFlow;
 
 import java.awt.*;
 import java.net.URL;
+import java.net.Socket;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-
+	
     @FXML
     TextArea messageBox = new TextArea();
 
@@ -46,11 +47,15 @@ public class Controller implements Initializable {
     Button send = new Button();
 
 
+    Client c;
+    
     public void sendButtonClick(){
-        String text = messageBox.getText();
+        /*String text = messageBox.getText();
         mainBody.setText(mainBody.getText() + text + "\n");
         System.out.println("button pressed!");
         messageBox.clear();
+        */
+    	c.sendMessage("Hi\n");
     }
 
 
@@ -64,6 +69,9 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    	c = new Client(mainBody, messageBox);
+    	c.setUpNetworking("localhost", 5000);
+    	
         messageBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
