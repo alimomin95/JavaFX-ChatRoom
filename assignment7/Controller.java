@@ -46,7 +46,7 @@ public class Controller implements Initializable {
     Button send = new Button();
 
 
-    public void button(){
+    public void sendButtonClick(){
         String text = messageBox.getText();
         mainBody.setText(mainBody.getText() + text + "\n");
         System.out.println("button pressed!");
