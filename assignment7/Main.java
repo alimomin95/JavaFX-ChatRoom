@@ -24,6 +24,7 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+
     @Override
     public void start(Stage primaryStage) {
 
@@ -39,14 +40,18 @@ public class Main extends Application {
         scenetitle.setFont(Font.font("Tahoma",FontWeight.NORMAL, 20));
         Label userName = new Label("Host Address:");
         TextField address = new TextField();
+        Label name = new Label("Your Name: ");
+        TextField nameBox = new TextField();
         Label port = new Label("Host Port: ");
         TextField portBox = new TextField();
 
         grid.add(scenetitle,0,0,2,1);
-        grid.add(userName,0,1);
-        grid.add(address, 1,1);
-        grid.add(port,0,2);
-        grid.add(portBox,1,2);
+        grid.add(name,0,1);
+        grid.add(nameBox, 1,1);
+        grid.add(userName,0,2);
+        grid.add(address,1,2);
+        grid.add(port, 0, 3);
+        grid.add(portBox, 1, 3);
 
         grid.setGridLinesVisible(false);
 
@@ -56,7 +61,7 @@ public class Main extends Application {
         hbBtn.getChildren().add(btn);
         grid.add(hbBtn,1,4);
 
-        final Text actiontarget = new Text();
+        Text actiontarget = new Text();
         grid.add(actiontarget,1,6);
 
         portBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -71,7 +76,7 @@ public class Main extends Application {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    primaryStage.setTitle("RSA Chat");
+                    primaryStage.setTitle("Client: " + nameBox.getText());
                     primaryStage.setScene(new Scene(root, 621, 469));
                     primaryStage.setResizable(false);
                     primaryStage.show();
@@ -81,8 +86,6 @@ public class Main extends Application {
 
         btn.setOnAction(event ->
         {
-            actiontarget.setFill(Color.FIREBRICK);
-            actiontarget.setText("Sign in button pressed");
             primaryStage.close();
             Parent root = null;
             try {
@@ -90,14 +93,14 @@ public class Main extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            primaryStage.setTitle("AQ Chat");
+            primaryStage.setTitle("Client: " + nameBox.getText());
             primaryStage.setScene(new Scene(root, 621, 469));
             primaryStage.setResizable(false);
             primaryStage.show();
 
         });
 
-        primaryStage.setTitle("JavaFX Main Form");
+        primaryStage.setTitle("AQ Chat");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

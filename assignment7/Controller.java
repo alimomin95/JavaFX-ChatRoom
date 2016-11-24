@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -18,30 +19,14 @@ import java.net.Socket;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-	
+
+    
+
     @FXML
     TextArea messageBox = new TextArea();
 
     @FXML
-    TextField hostAddress = new TextField();
-
-    @FXML
-    TextField hostPort = new TextField();
-
-    @FXML
-    TextField username = new TextField();
-
-    @FXML
-    PasswordField password = new PasswordField();
-
-    @FXML
     TextArea mainBody = new TextArea();
-
-    @FXML
-    Button connect = new Button();
-
-    @FXML
-    Button login = new Button();
 
     @FXML
     Button send = new Button();
