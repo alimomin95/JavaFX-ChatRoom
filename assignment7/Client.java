@@ -25,6 +25,10 @@ public class Client {
 
     }
 
+    private void initViewController(){
+
+    }
+
     private void setUpNetworking() throws Exception {
         Socket socket = new Socket(hostIPAddress, hostPortNumber);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -68,5 +72,6 @@ public class Client {
 
     public void run() throws Exception{
         setUpNetworking();
+        initViewController();
     }
 }
