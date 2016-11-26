@@ -17,7 +17,7 @@
       </ScrollPane>
       <ScrollPane hbarPolicy="NEVER" layoutX="192.0" layoutY="424.0" prefHeight="64.0" prefWidth="444.0">
          <content>
-            <TextArea fx:id="messageBox" onKeyPressed="#onEnterPress" prefHeight="62.0" prefWidth="442.0" wrapText="true" />
+            <TextArea fx:id="messageBox" onKeyPressed="#messageBoxOnKeyPress" onKeyReleased="#messageBoxOnKeyRelease" prefHeight="62.0" prefWidth="442.0" wrapText="true" />
          </content>
       </ScrollPane>
       <Button fx:id="logout" layoutX="569.0" layoutY="2.0" mnemonicParsing="false" onAction="#logoutOnClick" text="Logout" />
