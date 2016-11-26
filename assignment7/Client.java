@@ -1,5 +1,16 @@
 package assignment7;
 
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +24,7 @@ import javafx.scene.control.ScrollPane;
 /**
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
-public class Client {
+public class Client extends Application {
     private String hostIPAddress = "127.0.0.1";
     private int hostPortNumber = 5000;
     private BufferedReader reader;
@@ -22,17 +33,53 @@ public class Client {
     public ScrollPane chatListPane;
     
 
+    // ------------------------------- GUI Components: ----------------------------------------
+    @FXML
+    private Button logout;
+    @FXML
+    private TextArea convoBox;
+    @FXML
+    private TextArea messageBox;
+    // ----------------------------------------------------------------------------------------
+
+
     public static void main(String[] args){
         try{
             new Client().run();
         }catch (Exception e){
             e.printStackTrace();
         }
+        launch(args);
 
     }
 
     private void initViewController(){
-    	
+        //Not sure if we need this
+    }
+
+    // ---------------------------- This is for GUI functionality ------------------------------
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        logout = new Button();
+        convoBox = new TextArea();
+        messageBox = new TextArea();
+
+        Parent root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
+        primaryStage.setTitle("Chatter");
+        primaryStage.setScene(new Scene(root, 637, 488));
+        primaryStage.setResizable(false);
+        primaryStage.show();
+
+        messageBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ENTER){
+                    String text = messageBox.getText();
+                    convoBox.setText(text);
+                    messageBox.setText("");
+                }
+            }
+        });
     }
 
     private void setUpNetworking() throws Exception {
