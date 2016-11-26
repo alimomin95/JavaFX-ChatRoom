@@ -1,6 +1,7 @@
 package assignment7;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,9 @@ import javafx.scene.control.ScrollPane;
 public class Client extends Application {
     private String hostIPAddress = "127.0.0.1";
     private int hostPortNumber = 5000;
+    private String username = "quinn";
+    private String password = "pswd";
+    
     private BufferedReader reader;
     private PrintWriter writer;
     
@@ -40,6 +44,10 @@ public class Client extends Application {
     private TextArea convoBox;
     @FXML
     private TextArea messageBox;
+    @FXML
+    private ListView<String> chatListView;
+    @FXML
+    private ListView<String> personListView;
     // ----------------------------------------------------------------------------------------
 
 
@@ -52,7 +60,7 @@ public class Client extends Application {
         launch(args);
 
     }
-
+    
     private void initViewController(){
         //Not sure if we need this
     }
@@ -60,9 +68,12 @@ public class Client extends Application {
     // ---------------------------- This is for GUI functionality ------------------------------
     @Override
     public void start(Stage primaryStage) throws Exception {
-        logout = new Button();
-        convoBox = new TextArea();
-        messageBox = new TextArea();
+    	// I don't think you need these with scenebuilder
+        //logout = new Button();
+        //convoBox = new TextArea();
+       // messageBox = new TextArea();
+       // chatListView = new ListView<String>();
+      //  personListView = new ListView<String>();
 
         Parent root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
         primaryStage.setTitle("Chatter");
@@ -70,6 +81,9 @@ public class Client extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
+        //marked for deletion
+        //moved to a scenebuilder method onEnterPress
+        /*
         messageBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -80,6 +94,7 @@ public class Client extends Application {
                 }
             }
         });
+        */
     }
 
     private void setUpNetworking() throws Exception {
@@ -126,5 +141,21 @@ public class Client extends Application {
     public void run() throws Exception{
         setUpNetworking();
         initViewController();
+    }
+    
+    //the logout button is for debugging right now
+    public void logoutOnClick(){
+    	System.out.println("HI");
+    }
+    
+    public void onEnterPress(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER){
+            String text = messageBox.getText();
+            convoBox.appendText(username + ": " + text +"\n");
+            messageBox.setText("");
+           // messageBox.positionCaret(0);
+           // we need to fix the cursor thing?
+           // I think what's happening is it sets the text to "", and THEN the enter is registered
+        }
     }
 }
