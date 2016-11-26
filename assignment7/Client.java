@@ -50,9 +50,9 @@ public class Client extends Application {
     private String password = "pswd";
     
     @FXML
-    private BufferedReader reader;
+    private static BufferedReader reader;
     @FXML
-    private PrintWriter writer;
+    private static PrintWriter writer;
     
     public ScrollPane chatListPane;
     
@@ -190,7 +190,9 @@ public class Client extends Application {
 		*/
     	
     	//testing sending string to server
+    	System.out.println(writer);
     	writer.println("Hey");
+    	writer.flush();
     }
     
     @FXML
