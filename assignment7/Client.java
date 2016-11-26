@@ -1,6 +1,8 @@
 package assignment7;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,19 +12,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javafx.scene.control.ScrollPane;
+
 import javafx.collections.FXCollections;
-//testing
-import javafx.collections.ObservableList;
 
 
 /**
@@ -47,14 +54,20 @@ public class Client extends Application {
     private TextArea convoBox;
     @FXML
     private TextArea messageBox;
-    private boolean enterPressed = false;
-    private boolean shiftPressed = false;
     @FXML
-    private ListView<String> chatListView;
+    private ListView<HBoxCell> chatListView;
     @FXML
-    private ListView<String> personListView;
+    private ListView<HBoxCell> personListView;
     // ----------------------------------------------------------------------------------------
 
+    
+    //-------------------------------- GUI Variables: -----------------------------------------
+    private boolean enterPressed = false;
+    private boolean shiftPressed = false;
+    
+    private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
+
+    // ----------------------------------------------------------------------------------------
 
     public static void main(String[] args){
         try{
@@ -148,12 +161,43 @@ public class Client extends Application {
         initViewController();
     }
     
+
+    public static class HBoxCell extends HBox {
+         Label label = new Label();
+         Button button = new Button();
+
+         HBoxCell(String labelText, String buttonText) {
+              super();
+
+              label.setText(labelText);
+              label.setMaxWidth(Double.MAX_VALUE);
+              HBox.setHgrow(label, Priority.ALWAYS);
+
+              button.setText(buttonText);
+
+              this.getChildren().addAll(label, button);
+         }
+    }
+
+    
     //the logout button is for debugging right now
     @FXML
     public void logoutOnClick(){
-    	ObservableList<String> test = FXCollections.
-    			<String>observableArrayList("Test1", "Test2");
-    	chatListView.getItems().setAll(test);
+    	/*
+        //ObservableList<PersonCell> test = FXCollections.<PersonCell>observableArrayList(new PersonCell("Test1", false));
+    	List<PersonCell> test = new ArrayList<>();
+    	test.add(new PersonCell("test1", true));
+        ObservableList<PersonCell> obl = FXCollections.observableList(test);
+        personListView.getItems().addAll(obl);
+		*/
+
+        List<HBoxCell> list = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+             list.add(new HBoxCell("Item " + i, "Button " + i));
+        }
+
+        ObservableList<HBoxCell> myObservableList = FXCollections.observableList(list);
+        personListView.getItems().addAll(myObservableList);
     }
     
     @FXML
