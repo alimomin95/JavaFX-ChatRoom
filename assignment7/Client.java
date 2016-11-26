@@ -48,15 +48,16 @@ public class Client extends Application {
     }
 
     private void initViewController(){
-
+        //Not sure if we need this
     }
 
+    // ---------------------------- This is for GUI functionality ------------------------------
     @Override
     public void start(Stage primaryStage) throws Exception {
         logout = new Button();
         convoBox = new TextArea();
         messageBox = new TextArea();
-        
+
         Parent root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
         primaryStage.setTitle("Chatter");
         primaryStage.setScene(new Scene(root, 637, 488));
