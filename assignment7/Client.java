@@ -190,6 +190,7 @@ public class Client extends Application {
 		*/
     	
     	//testing sending string to server
+    	writer.println("Hey");
     }
     
     @FXML
