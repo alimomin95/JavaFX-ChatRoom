@@ -27,7 +27,7 @@
                <content>
                   <ScrollPane fx:id="chatListPane" hbarPolicy="NEVER" prefHeight="459.0" prefWidth="77.0" vbarPolicy="ALWAYS">
                      <content>
-                        <ListView prefHeight="458.0" prefWidth="173.0" />
+                        <ListView fx:id="chatListView" prefHeight="458.0" prefWidth="173.0" />
                      </content>
                   </ScrollPane>
                </content>

@@ -20,6 +20,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import javafx.scene.control.ScrollPane;
+import javafx.collections.FXCollections;
+//testing
+import javafx.collections.ObservableList;
 
 
 /**
@@ -146,11 +149,14 @@ public class Client extends Application {
     }
     
     //the logout button is for debugging right now
+    @FXML
     public void logoutOnClick(){
-    	System.out.println("HI");
+    	ObservableList<String> test = FXCollections.
+    			<String>observableArrayList("Test1", "Test2");
+    	chatListView.getItems().setAll(test);
     }
     
-    
+    @FXML
     public void messageBoxOnKeyPress(KeyEvent event) {
     	if(event.getCode() == KeyCode.SHIFT){
     		shiftPressed = true;
@@ -173,6 +179,7 @@ public class Client extends Application {
         }
     }
     
+    @FXML
     public void messageBoxOnKeyRelease(KeyEvent event){
     	if(event.getCode() == KeyCode.SHIFT){
     		shiftPressed = false;
