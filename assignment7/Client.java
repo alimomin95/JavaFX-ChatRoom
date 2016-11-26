@@ -49,7 +49,9 @@ public class Client extends Application {
     private String username = "quinn";
     private String password = "pswd";
     
+    @FXML
     private BufferedReader reader;
+    @FXML
     private PrintWriter writer;
     
     public ScrollPane chatListPane;
@@ -63,9 +65,9 @@ public class Client extends Application {
     @FXML
     private TextArea messageBox;
     @FXML
-    private ListView<HBoxCell> chatListView;
+    private ListView<PersonCell> chatListView;
     @FXML
-    private ListView<HBoxCell> personListView;
+    private ListView<PersonCell> personListView;
     // ----------------------------------------------------------------------------------------
 
     
@@ -128,6 +130,7 @@ public class Client extends Application {
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream());
         System.out.println("Networking established with " + hostIPAddress);
+        System.out.println(writer);
         Thread readerThread = new Thread(new IncomingReader());
         Thread writerThread = new Thread(new MessageWriter());
         readerThread.start();
@@ -149,20 +152,23 @@ public class Client extends Application {
             }
         }
     }
-
+    
     class MessageWriter implements Runnable{
 
         @Override
         public void run() {
             //System.out.print("User: ");
             Scanner sc = new Scanner(System.in);
-            while(sc.hasNextLine()) {
-                writer.println(sc.nextLine());
-                writer.flush();
-                //System.out.print("User: ");
+            while(true) {
+            	if(sc.hasNextLine()){
+            		writer.println(sc.nextLine());
+            		writer.flush();
+            		//System.out.print("User: ");
+            	}
             }
         }
     }
+ 
 
     public void run() throws Exception{
         setUpNetworking();
@@ -182,7 +188,8 @@ public class Client extends Application {
         ObservableList<PersonCell> obl = FXCollections.observableList(test);
         personListView.getItems().addAll(obl);
 		*/
-
+    	
+    	//testing sending string to server
     }
     
     @FXML
@@ -197,10 +204,14 @@ public class Client extends Application {
     	
     	else if(event.getCode() == KeyCode.ENTER && shiftPressed == false){
         	if (enterPressed == false){
-        		enterPressed = true;
-        		String text = messageBox.getText();
-        		convoBox.appendText(username + ": " + text +"\n");
-        		messageBox.setText("");
+        		if(!messageBox.getText().equals("")){
+        			enterPressed = true;
+        			String text = messageBox.getText();
+        	    	writer.println("HI");    	
+
+        			convoBox.appendText(username + ": " + text +"\n");
+        			messageBox.setText("");
+        		}
         	}
         	else{
         		messageBox.setText("");
