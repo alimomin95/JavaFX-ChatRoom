@@ -170,22 +170,6 @@ public class Client extends Application {
     }
     
 
-    public static class HBoxCell extends HBox {
-         Label label = new Label();
-         Button button = new Button();
-
-         HBoxCell(String labelText, String buttonText) {
-              super();
-
-              label.setText(labelText);
-              label.setMaxWidth(Double.MAX_VALUE);
-              HBox.setHgrow(label, Priority.ALWAYS);
-
-              button.setText(buttonText);
-
-              this.getChildren().addAll(label, button);
-         }
-    }
 
     
     //the logout button is for debugging right now
@@ -199,13 +183,6 @@ public class Client extends Application {
         personListView.getItems().addAll(obl);
 		*/
 
-        List<HBoxCell> list = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-             list.add(new HBoxCell("Item " + i, "Button " + i));
-        }
-
-        ObservableList<HBoxCell> myObservableList = FXCollections.observableList(list);
-        personListView.getItems().addAll(myObservableList);
     }
     
     @FXML
