@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javafx.scene.control.ScrollPane;
+
+
 /**
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
@@ -15,6 +18,9 @@ public class Client {
     private int hostPortNumber = 5000;
     private BufferedReader reader;
     private PrintWriter writer;
+    
+    public ScrollPane chatListPane;
+    
 
     public static void main(String[] args){
         try{
@@ -26,7 +32,7 @@ public class Client {
     }
 
     private void initViewController(){
-
+    	
     }
 
     private void setUpNetworking() throws Exception {
