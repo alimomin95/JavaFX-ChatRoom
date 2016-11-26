@@ -44,6 +44,8 @@ public class Client extends Application {
     private TextArea convoBox;
     @FXML
     private TextArea messageBox;
+    private boolean enterPressed = false;
+    private boolean shiftPressed = false;
     @FXML
     private ListView<String> chatListView;
     @FXML
@@ -148,14 +150,37 @@ public class Client extends Application {
     	System.out.println("HI");
     }
     
-    public void onEnterPress(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER){
-            String text = messageBox.getText();
-            convoBox.appendText(username + ": " + text +"\n");
-            messageBox.setText("");
-           // messageBox.positionCaret(0);
-           // we need to fix the cursor thing?
-           // I think what's happening is it sets the text to "", and THEN the enter is registered
+    
+    public void messageBoxOnKeyPress(KeyEvent event) {
+    	if(event.getCode() == KeyCode.SHIFT){
+    		shiftPressed = true;
+    	}
+    	
+    	else if(event.getCode() == KeyCode.ENTER && shiftPressed == true){
+    		messageBox.appendText("\n");
+    	}
+    	
+    	else if(event.getCode() == KeyCode.ENTER && shiftPressed == false){
+        	if (enterPressed == false){
+        		enterPressed = true;
+        		String text = messageBox.getText();
+        		convoBox.appendText(username + ": " + text +"\n");
+        		messageBox.setText("");
+        	}
+        	else{
+        		messageBox.setText("");
+        	}
         }
+    }
+    
+    public void messageBoxOnKeyRelease(KeyEvent event){
+    	if(event.getCode() == KeyCode.SHIFT){
+    		shiftPressed = false;
+    	}
+    	
+    	if(event.getCode() == KeyCode.ENTER && shiftPressed == false){
+        	enterPressed = false;
+    		messageBox.setText("");
+    	}
     }
 }
