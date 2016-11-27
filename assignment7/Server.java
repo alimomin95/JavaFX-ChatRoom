@@ -27,7 +27,7 @@ public class Server extends Observable {
             Thread t = new Thread(new ClientHandler(clientSocket));
             t.start();
             this.addObserver(writer);
-            System.out.println("got a connection");
+            System.out.println("got a connectionn");
         }
     }
 
@@ -52,9 +52,10 @@ public class Server extends Observable {
 
             try{
                 while ((message = reader.readLine())!= null){
-                    System.out.print("Server read: " + message);
+                    System.out.println("Server read: " + message);
                     setChanged();
                     notifyObservers(message);
+                    clearChanged();
                 }
             }catch (IOException e){
                 e.printStackTrace();

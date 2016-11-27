@@ -61,7 +61,7 @@ public class Client extends Application {
     @FXML
     private Button logout;
     @FXML
-    private TextArea convoBox;
+    public TextArea convoBox;
     @FXML
     private TextArea messageBox;
     @FXML
@@ -130,22 +130,21 @@ public class Client extends Application {
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream());
         System.out.println("Networking established with " + hostIPAddress);
-        System.out.println(writer);
         Thread readerThread = new Thread(new IncomingReader());
-        Thread writerThread = new Thread(new MessageWriter());
         readerThread.start();
-        writerThread.start();
     }
 
 
     class IncomingReader implements Runnable{
-
+    	
+    	
         @Override
         public void run() {
             String message;
             try{
                 while((message = reader.readLine()) != null){
-                    System.out.println(message);
+                	convoBox.appendText(message);
+                    //System.out.println(message);
                 }
             }catch (IOException e){
                 e.printStackTrace();
@@ -153,6 +152,8 @@ public class Client extends Application {
         }
     }
     
+    //marked for deletion
+    /*
     class MessageWriter implements Runnable{
 
         @Override
@@ -168,6 +169,7 @@ public class Client extends Application {
             }
         }
     }
+    */
  
 
     public void run() throws Exception{
@@ -189,10 +191,6 @@ public class Client extends Application {
         personListView.getItems().addAll(obl);
 		*/
     	
-    	//testing sending string to server
-    	System.out.println(writer);
-    	writer.println("Hey");
-    	writer.flush();
     }
     
     @FXML
@@ -210,9 +208,14 @@ public class Client extends Application {
         		if(!messageBox.getText().equals("")){
         			enterPressed = true;
         			String text = messageBox.getText();
-        	    	writer.println("HI");    	
+        			
+        	    	//writer.println("HI");    	
+        			//convoBox.appendText(username + ": " + text +"\n");
+        	    	
+        			//testing sending string to server
+        	    	writer.println(text);
+        	    	writer.flush();
 
-        			convoBox.appendText(username + ": " + text +"\n");
         			messageBox.setText("");
         		}
         	}
