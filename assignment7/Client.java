@@ -107,7 +107,7 @@ public class Client extends Application {
         primaryStage.setScene(new Scene(root, 637, 488));
         primaryStage.setResizable(false);
         primaryStage.show();
-        
+
         setUpNetworking();
     }
     
@@ -118,6 +118,7 @@ public class Client extends Application {
         writer = new PrintWriter(socket.getOutputStream());
         Thread.sleep(20);
         writer.println(username);
+        writer.flush();
         System.out.println("Networking established with " + hostIPAddress);
         Thread readerThread = new Thread(new IncomingReader(root));
         readerThread.start();
