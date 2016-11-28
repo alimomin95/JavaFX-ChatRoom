@@ -63,9 +63,15 @@ public class Server extends Observable {
 
             String message;
 
+            String[] m;
+
             try{
                 while ((message = reader.readLine())!= null){
                     System.out.println("Server read: " + message);
+                    m = message.split(";");
+                    if(onlineUsers.containsKey(m[0])){
+
+                    }
                     setChanged();
                     notifyObservers(message);
                     clearChanged();
