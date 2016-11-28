@@ -12,7 +12,7 @@
    <children>
       <ScrollPane hbarPolicy="NEVER" layoutX="192.0" layoutY="27.0" prefHeight="391.0" prefWidth="444.0" vbarPolicy="ALWAYS">
          <content>
-            <TextArea fx:id="convoBox" editable="false" prefHeight="388.0" prefWidth="429.0" wrapText="true" />
+            <TextArea id="convoBox" fx:id="convoBox" editable="false" prefHeight="388.0" prefWidth="429.0" wrapText="true" />
          </content>
       </ScrollPane>
       <ScrollPane hbarPolicy="NEVER" layoutX="192.0" layoutY="424.0" prefHeight="64.0" prefWidth="444.0">
