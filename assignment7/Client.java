@@ -116,6 +116,8 @@ public class Client extends Application {
         Socket socket = new Socket(hostIPAddress, hostPortNumber);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream());
+        Thread.sleep(20);
+        writer.println(username);
         System.out.println("Networking established with " + hostIPAddress);
         Thread readerThread = new Thread(new IncomingReader(root));
         readerThread.start();

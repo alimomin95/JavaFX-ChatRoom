@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Observable;
 
 /**
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
 public class Server extends Observable {
+
+    public HashMap<String, ClientObserver> onlineUsers = new HashMap<>();
+
     public static void main(String[] args){
         try{
             new Server().setUpNetworking();
@@ -21,13 +25,22 @@ public class Server extends Observable {
 
     private void setUpNetworking() throws Exception{
         ServerSocket serverSocket = new ServerSocket(5000);
+        String message;
         while(true){
             Socket clientSocket = serverSocket.accept();
             ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
+            BufferedReader tempReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            while (true){
+                if((message = tempReader.readLine())!= null){
+                    onlineUsers.put(message, writer);
+                    System.out.println(message);
+                    break;
+                }
+            }
             Thread t = new Thread(new ClientHandler(clientSocket));
             t.start();
             this.addObserver(writer);
-            System.out.println("got a connectionn");
+            System.out.println("got a connection");
         }
     }
 
