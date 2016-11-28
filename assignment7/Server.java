@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 
@@ -15,6 +16,8 @@ public class Server extends Observable {
 
     public HashMap<String, ClientObserver> onlineUsers = new HashMap<>();
 
+    public HashMap<String, ArrayList<ClientObserver>> currentChats;
+    
     public static void main(String[] args){
         try{
             new Server().setUpNetworking();
