@@ -36,6 +36,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -79,6 +80,10 @@ public class Client extends Application {
     //-------------------------------- GUI Variables: -----------------------------------------
     private boolean enterPressed = false;
     private boolean shiftPressed = false;
+    
+    //these two variables keep track of the users chats
+    private ArrayList<String> chats = new ArrayList<>();
+    private HashMap<String, String> chatText = new HashMap<>();
     
     private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
 
