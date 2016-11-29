@@ -79,7 +79,23 @@ public class Server extends Observable {
                 while ((message = reader.readLine())!= null){
                     System.out.println("Server read: " + message);
                     m = message.split(";");
-                    if(onlineUsers.containsKey(m[0])) {
+                    
+                    
+                    if (m[0].equals("@CHATS")) {
+                        if (currentChats.containsKey(m[1])) {
+
+                        } else {
+                            ChatObserver c = new ChatObserver();
+                            currentChats.put(m[1], c);
+                            historyOfChats.put(m[1], null);
+                            int numOfUsers = m.length - 2;
+                            for (int i = 0; i < numOfUsers; i++) {
+                                c.usersInChat.add(m[i + 2]);
+                                c.addObserver(onlineUsers.get(m[i + 2]));
+                            }
+                        }
+                    }
+                    else if(onlineUsers.containsKey(m[0])) {
                         if (currentChats.containsKey(m[1])) {
                             if (m[2].equals("/leave")) {
                                 ChatObserver a = currentChats.get(m[1]);
@@ -97,24 +113,8 @@ public class Server extends Observable {
                                 historyOfChats.replace(m[1], historyOfChats.get(m[1]) + "\n" + outgoing);
                                 a.unChanged();
                             }
-                        } else if (m[0].equals("@CHATS")) {
-                            if (currentChats.containsKey(m[1])) {
-
-                            } else {
-                                ChatObserver c = new ChatObserver();
-                                currentChats.put(m[1], c);
-                                historyOfChats.put(m[1], null);
-                                int numOfUsers = m.length - 2;
-                                for (int i = 0; i < numOfUsers; i++) {
-                                    c.usersInChat.add(m[i + 2]);
-                                    c.addObserver(onlineUsers.get(m[i + 2]));
-                                }
-                            }
-                        }
+                        }                         }
                     }
-
-
-                }
             }catch (IOException e){
                 e.printStackTrace();
             }
