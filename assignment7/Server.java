@@ -71,6 +71,7 @@ public class Server extends Observable {
 			String[] split;
 			if(message.charAt(0) == '@'){
 				split = message.split(";");
+	        	//@CHATS;{new, delete, rename, add, remove};{chat};etc
 				if(split[0].equals("@CHATS")){
 					String chat = split[2];
 					ChatObserver c = null;
