@@ -195,6 +195,7 @@ public class Client extends Application {
     	f++;
     	chatListView.getItems().add("test" + f);
     	writer.println("@CHATS;" + "test" + f + ";"+ "quinn;ali");
+    	writer.flush();
     	chats.add("test" + f);
     	chatText.put("test" + f, new String(""));
     }
@@ -216,7 +217,7 @@ public class Client extends Application {
         			//server: "USR: MSG"
         			enterPressed = true;
         			String text = messageBox.getText();
-        	    	writer.println(username + ";" + text);
+        	    	writer.println(username + ";" + currentChat + ";" + text);
         	    	writer.flush();
 
         			messageBox.setText("");
