@@ -67,7 +67,72 @@ public class Server extends Observable {
             }
         }
 
-
+        /*
+        	commands:
+        	@CHATS;{new, delete, rename, add, remove};etc
+        	@CHATS;{new};[chat];[usr1];[usr2]...
+        	@CHATS;{delete};[chat]
+        	@CHATS;{add};[usr1];[usr2]...
+        	@CHATS;{remove};[usr1];[usr2]...
+        	
+        	@USER;{login, logout, register, rename, add, remove};etc
+        	@USER;{login};username;password
+        	@USER;{logout};usernmae;password
+        	@USER;{register};username;password
+        	@USER;{rename};username;password;newname
+        	@USER;{addfriend};username;friend
+        	@USER;{removefriend};username;friend
+        	
+        	@MESSAGE;{chat};{user};{message}
+        
+        */
+        
+        /* Skeleton of command processor
+         * 	message = reader.readLine()
+			String split;
+			if(message.getAt(0) == '@'){
+				split = message.split(";")
+				if(split[0].equals("@CHATS")){
+					if(split[1].equals("new")){
+						
+					}
+					else if(split[1].equals("delete")){
+			
+					}
+					else if(split[1].equals("rename")){
+			
+					}
+					else if(split[1].equals("add")){
+			
+					}
+					else if(split[1].equals("remove")){
+			
+					}
+				}
+				else if(split[0].eqauls("@USER")){
+					if(split[1].equals("login")){
+			
+					}
+					else if(split[1].equals("logout")){
+			
+					}
+					else if(split[1].equals("register")){
+			
+					}
+					else if(split[1].equals("rename")){
+			
+					}
+					else if(split[1].equals("add")){
+			
+					}
+					else if(split[1].equals("remove")){
+			
+					}
+				}
+			}
+         * 
+         * 
+         */
         @Override
         public void run() {
 
@@ -89,14 +154,12 @@ public class Server extends Observable {
                             currentChats.put(m[1], c);
                             historyOfChats.put(m[1], null);
                             int numOfUsers = m.length - 2;
-                            System.out.println(numOfUsers);
-                            System.out.println(m.length);
-                            for (int i = 0; i < numOfUsers; i++) {
-                            	System.out.println(i);
-                            	
+                            for (int i = 0; i < numOfUsers; i++) {                            	
                                 c.usersInChat.add(m[i + 2]);
                                 c.addObserver(onlineUsers.get(m[i + 2]));
                             }
+                            //c.changed();
+                            //c.notifyObservers("@CHATS");
                         }
                     }
                     else if(onlineUsers.containsKey(m[0])) {
