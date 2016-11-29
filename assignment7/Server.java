@@ -3,6 +3,7 @@ package assignment7;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -14,9 +15,13 @@ import java.util.Observable;
  */
 public class Server extends Observable {
 
+    public HashMap<String, PrintWriter> individualPrinters = new HashMap<>();
+
     public HashMap<String, ClientObserver> onlineUsers = new HashMap<>();
 
-    public HashMap<String, ArrayList<ClientObserver>> currentChats;
+    public HashMap<String, ChatObserver> currentChats = new HashMap<>();
+
+    public HashMap<String, String> historyOfChats = new HashMap<>();
     
     public static void main(String[] args){
         try{
@@ -31,10 +36,12 @@ public class Server extends Observable {
         String message;
         while(true){
             Socket clientSocket = serverSocket.accept();
+            PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
             ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
             BufferedReader tempReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             while (true){
                 if((message = tempReader.readLine())!= null){
+                    individualPrinters.put(message, printWriter);
                     onlineUsers.put(message, writer);
                     System.out.println(message);
                     break;
@@ -72,12 +79,41 @@ public class Server extends Observable {
                 while ((message = reader.readLine())!= null){
                     System.out.println("Server read: " + message);
                     m = message.split(";");
-                    if(onlineUsers.containsKey(m[0])){
+                    if(onlineUsers.containsKey(m[0])) {
+                        if (currentChats.containsKey(m[1])) {
+                            if (m[2].equals("/leave")) {
+                                ChatObserver a = currentChats.get(m[1]);
+                                a.usersInChat.remove(m[0]);
+                                a.deleteObserver(onlineUsers.get(m[0]));
+                            } else if (m[2].equals("/history")) {
+                                PrintWriter p = individualPrinters.get(m[0]);
+                                p.println(historyOfChats.get(m[1]));
+                                p.flush();
+                            } else {
+                                ChatObserver a = currentChats.get(m[1]);
+                                a.changed();
+                                String outgoing = m[0] + ": " + m[2];
+                                a.notifyObservers(m[0] + ": " + m[2]);
+                                historyOfChats.replace(m[1], historyOfChats.get(m[1]) + "\n" + outgoing);
+                                a.unChanged();
+                            }
+                        } else if (m[0].equals("@CHATS")) {
+                            if (currentChats.containsKey(m[1])) {
 
+                            } else {
+                                ChatObserver c = new ChatObserver();
+                                currentChats.put(m[1], c);
+                                historyOfChats.put(m[1], null);
+                                int numOfUsers = m.length - 2;
+                                for (int i = 0; i < numOfUsers; i++) {
+                                    c.usersInChat.add(m[i + 2]);
+                                    c.addObserver(onlineUsers.get(m[i + 2]));
+                                }
+                            }
+                        }
                     }
-                    setChanged();
-                    notifyObservers(message);
-                    clearChanged();
+
+
                 }
             }catch (IOException e){
                 e.printStackTrace();
