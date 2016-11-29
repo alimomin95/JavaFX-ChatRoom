@@ -195,7 +195,7 @@ public class Client extends Application {
 	public void logoutOnClick() {
 		f++;
 		chatListView.getItems().add("test" + f);
-		writer.println("@CHATS;" + "test" + f + ";" + "quinn");
+		writer.println("@CHATS;" + "test" + f + ";" + username);
 		writer.flush();
 		chats.add("test" + f);
 		chatText.put("test" + f, new String(""));
