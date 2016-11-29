@@ -66,14 +66,114 @@ public class Server extends Observable {
                 e.printStackTrace();
             }
         }
+        
+        private void processMessage(String message){
+			String[] split;
+			if(message.charAt(0) == '@'){
+				split = message.split(";");
+				if(split[0].equals("@CHATS")){
+					String chat = split[2];
+					ChatObserver c = null;
+					if(split[1].equals("new")){ //make new chat
+                        if (currentChats.containsKey(chat)){
+                        	//should notify the creator that the name already exists
+                        } else {
+                            c = new ChatObserver();
+                            currentChats.put(chat, c);
+                            historyOfChats.put(chat, null);
+                            String[] userlist = message.split(";", 3)[3].split(";"); //lol
+                            for(String user : userlist){
+                                c.usersInChat.add(user);
+                                c.addObserver(onlineUsers.get(user));
+                            }
+                        }
+					}
+					else if(split[1].equals("delete")){ //delete existing chat
+						if(currentChats.containsKey(chat)){
+							c = currentChats.get(chat);
+							currentChats.remove(chat);
+						}
+					}
+					else if(split[1].equals("rename")){ //rename existing chat
+						if(currentChats.containsKey(chat)){
+							String newname = split[3];
+							c = currentChats.get(chat);
+							currentChats.remove(chat);
+							currentChats.put(newname, c);
+						}
+			
+					}
+					else if(split[1].equals("add")){ //add n users to chat
+						if(currentChats.containsKey(chat)){
+							c = currentChats.get(chat);	
+                            String[] userlist = message.split(";", 3)[3].split(";"); //lol
+							for(String user : userlist){
+								if(c.usersInChat.contains(user)){
+									//complain somehow
+								}
+								else{
+									c.usersInChat.add(user);
+	                                c.addObserver(onlineUsers.get(user));
+								}
+							}
+						}
+
+					}
+					else if(split[1].equals("remove")){ //remove n users from chat
+						c = currentChats.get(chat);	
+                        String[] userlist = message.split(";", 3)[3].split(";"); //lol
+						for(String user : userlist){
+							if(c.usersInChat.contains(user)){
+								c.usersInChat.remove(user);
+                                c.deleteObserver((onlineUsers.get(user)));
+							}
+							else{
+								//complain somehow
+							}
+							}
+						}
+					if(c != null){
+						c.changed();
+						c.notifyObservers(message); //tell included users that a new chat was made
+						c.unChanged();
+					}
+				}
+				else if(split[0].equals("@USER")){
+					if(split[1].equals("login")){
+			
+					}
+					else if(split[1].equals("logout")){
+			
+					}
+					else if(split[1].equals("register")){
+			
+					}
+					else if(split[1].equals("rename")){
+			
+					}
+					else if(split[1].equals("add")){
+			
+					}
+					else if(split[1].equals("remove")){
+			
+					}
+				}
+				else if(split[0].equals("@MESSAGE")){
+
+				}
+				
+			}
+
+        }
 
         /*
         	commands:
-        	@CHATS;{new, delete, rename, add, remove};etc
+        	@CHATS;{new, delete, rename, add, remove};{chat};etc
         	@CHATS;{new};[chat];[usr1];[usr2]...
         	@CHATS;{delete};[chat]
-        	@CHATS;{add};[usr1];[usr2]...
-        	@CHATS;{remove};[usr1];[usr2]...
+        	@CHATS;{rename};{chat};{newname}
+        	@CHATS;{add};{chat};[usr1];[usr2]...
+        	@CHATS;{remove};{chat};[usr1];[usr2]...
         	
         	@USER;{login, logout, register, rename, add, remove};etc
         	@USER;{login};username;password
