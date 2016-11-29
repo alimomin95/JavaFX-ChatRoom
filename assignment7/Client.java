@@ -1,6 +1,8 @@
 package assignment7;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,9 +73,9 @@ public class Client extends Application {
     @FXML
     private TextArea messageBox;
     @FXML
-    private ListView<PersonCell> chatListView;
+    private ListView<String> chatListView;
     @FXML
-    private ListView<PersonCell> personListView;
+    private ListView<String> personListView;
     // ----------------------------------------------------------------------------------------
 
     
@@ -99,7 +101,22 @@ public class Client extends Application {
 
     }
     
-    
+    @FXML
+    public void initialize(){
+    	chatListView.getSelectionModel().selectedItemProperty().addListener(
+    			new ChangeListener<String>()
+    			{
+    				@Override
+    				public void changed(ObservableValue<? extends String> ov,
+    	                    final String oldvalue, final String newvalue)
+    				{
+    					System.out.println(newvalue);
+    					//convoBox.setText(value);
+    			}});
+    }
+
+    					
+    					
     private void initViewController(){
         //Not sure if we need this
     }
@@ -121,8 +138,9 @@ public class Client extends Application {
         Socket socket = new Socket(hostIPAddress, hostPortNumber);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream());
-        Thread.sleep(20);
-        writer.println(username);
+        //Thread.sleep(20);
+        writer.println("@LOGIN;" + username);
+        //writer.println("@REGISTER;" + username);
         writer.flush();
         System.out.println("Networking established with " + hostIPAddress);
         Thread readerThread = new Thread(new IncomingReader(root));
@@ -158,13 +176,18 @@ public class Client extends Application {
         initViewController();
     }
     
-
-
     
+    //private ArrayList<String> chats = new ArrayList<>();
+    //private HashMap<String, String> chatText = new HashMap<>();
     //the logout button is for debugging right now
+    private int f = 0;
     @FXML
     public void logoutOnClick(){
-    	
+    	f++;
+    	chatListView.getItems().add("test" + f);
+    	writer.println("@CHATS;" + "test" + f + ";"+ "quinn;ali");
+    	chats.add("test" + f);
+    	chatText.put("test" + f, new String(""));
     }
     
     @FXML
@@ -184,7 +207,7 @@ public class Client extends Application {
         			//server: "USR: MSG"
         			enterPressed = true;
         			String text = messageBox.getText();
-        	    	writer.println(username + ": " + text);
+        	    	writer.println(username + ";" + text);
         	    	writer.flush();
 
         			messageBox.setText("");
