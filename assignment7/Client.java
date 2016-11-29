@@ -86,6 +86,7 @@ public class Client extends Application {
     //these two variables keep track of the users chats
     private ArrayList<String> chats = new ArrayList<>();
     private HashMap<String, String> chatText = new HashMap<>();
+    private String currentChat;
     
     private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
 
@@ -110,8 +111,8 @@ public class Client extends Application {
     				public void changed(ObservableValue<? extends String> ov,
     	                    final String oldvalue, final String newvalue)
     				{
-    					System.out.println(newvalue);
-    					//convoBox.setText(value);
+    					currentChat = newvalue;
+    					convoBox.setText(chatText.get(newvalue));
     			}});
     }
 
@@ -160,8 +161,16 @@ public class Client extends Application {
             try{
                 while((message = reader.readLine()) != null){
                     synchronized(this) {
-                		TextArea n = (TextArea) root.lookup("#convoBox");
-                		n.appendText(message + "\n");
+                		//TextArea n = (TextArea) root.lookup("#convoBox");
+                		//n.appendText(message + "\n");
+                    	String[] m = message.split(";");
+                    	if(chatText.containsKey(m[1])){
+                    		chatText.replace(m[1], message);
+                    	}
+                    	if(currentChat.equals(m[1])){
+                    		TextArea n = (TextArea) root.lookup("#convoBox");
+                    		n.setText(message);
+                    	}
                 	}
                 }
             }catch (IOException e){
