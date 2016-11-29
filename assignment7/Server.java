@@ -89,7 +89,11 @@ public class Server extends Observable {
                             currentChats.put(m[1], c);
                             historyOfChats.put(m[1], null);
                             int numOfUsers = m.length - 2;
+                            System.out.println(numOfUsers);
+                            System.out.println(m.length);
                             for (int i = 0; i < numOfUsers; i++) {
+                            	System.out.println(i);
+                            	
                                 c.usersInChat.add(m[i + 2]);
                                 c.addObserver(onlineUsers.get(m[i + 2]));
                             }
@@ -109,7 +113,7 @@ public class Server extends Observable {
                                 ChatObserver a = currentChats.get(m[1]);
                                 a.changed();
                                 String outgoing = m[0] + ": " + m[2];
-                                a.notifyObservers(m[0] + ": " + m[2]);
+                                a.notifyObservers(message);
                                 historyOfChats.replace(m[1], historyOfChats.get(m[1]) + "\n" + outgoing);
                                 a.unChanged();
                             }

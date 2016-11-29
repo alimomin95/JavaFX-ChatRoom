@@ -47,197 +47,197 @@ import javafx.scene.control.ScrollPane;
 
 import javafx.collections.FXCollections;
 
-
 /**
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
 public class Client extends Application {
-    private String hostIPAddress = "127.0.0.1";
-    private int hostPortNumber = 5000;
-    private String username = "quinn";
-    private String password = "pswd";
-        
-    private static BufferedReader reader;
-    private static PrintWriter writer;
+	private String hostIPAddress = "127.0.0.1";
+	private int hostPortNumber = 5000;
+	private String username = "quinn";
+	private String password = "pswd";
+
+	private static BufferedReader reader;
+	private static PrintWriter writer;
 	public static Object getConvoBox;
-    
-    public ScrollPane chatListPane;
-    
-    public Parent root;
-    
-    // ------------------------------- GUI Components: ----------------------------------------
-    @FXML
-    private Button logout;
-   // @FXML
-    public TextArea convoBox;
-    @FXML
-    private TextArea messageBox;
-    @FXML
-    private ListView<String> chatListView;
-    @FXML
-    private ListView<String> personListView;
-    // ----------------------------------------------------------------------------------------
 
-    
-    //-------------------------------- GUI Variables: -----------------------------------------
-    private boolean enterPressed = false;
-    private boolean shiftPressed = false;
-    
-    //these two variables keep track of the users chats
-    private ArrayList<String> chats = new ArrayList<>();
-    private HashMap<String, String> chatText = new HashMap<>();
-    private String currentChat;
-    
-    private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
+	public ScrollPane chatListPane;
 
-    // ----------------------------------------------------------------------------------------
+	public Parent root;
 
-    public static void main(String[] args){
-        try{
-            new Client().run();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        launch(args);
+	// ------------------------------- GUI Components:
+	// ----------------------------------------
+	@FXML
+	private Button logout;
+	@FXML
+	public TextArea convoBox;
+	@FXML
+	private TextArea messageBox;
+	@FXML
+	private ListView<String> chatListView;
+	@FXML
+	private ListView<String> personListView;
+	// ----------------------------------------------------------------------------------------
 
-    }
-    
-    @FXML
-    public void initialize(){
-    	chatListView.getSelectionModel().selectedItemProperty().addListener(
-    			new ChangeListener<String>()
-    			{
-    				@Override
-    				public void changed(ObservableValue<? extends String> ov,
-    	                    final String oldvalue, final String newvalue)
-    				{
-    					currentChat = newvalue;
-    					convoBox.setText(chatText.get(newvalue));
-    			}});
-    }
+	// -------------------------------- GUI Variables:
+	// -----------------------------------------
+	private boolean enterPressed = false;
+	private boolean shiftPressed = false;
 
-    					
-    					
-    private void initViewController(){
-        //Not sure if we need this
-    }
+	// these two variables keep track of the users chats
+	private static ArrayList<String> chats = new ArrayList<>();
+	private static HashMap<String, String> chatText = new HashMap<>();
+	public static String currentChat;
 
-    // ---------------------------- This is for GUI functionality ------------------------------
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
-        primaryStage.setTitle("Chatter");
-        primaryStage.setScene(new Scene(root, 637, 488));
-        primaryStage.setResizable(false);
-        primaryStage.show();
+	private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
 
-        setUpNetworking();
-    }
-    
+	// ----------------------------------------------------------------------------------------
 
-    private void setUpNetworking() throws Exception {
-        Socket socket = new Socket(hostIPAddress, hostPortNumber);
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        writer = new PrintWriter(socket.getOutputStream());
-        //Thread.sleep(20);
-        writer.println("@LOGIN;" + username);
-        //writer.println("@REGISTER;" + username);
-        writer.flush();
-        System.out.println("Networking established with " + hostIPAddress);
-        Thread readerThread = new Thread(new IncomingReader(root));
-        readerThread.start();
-    }
+	public static void main(String[] args) {
+		try {
+			new Client().run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		launch(args);
 
-    class IncomingReader implements Runnable{
-    	Parent root;
-    	
-    	public IncomingReader(Parent root){
-    		this.root = root;
-    	}
-    	
-        @Override
-        public void run() {
-            String message;
-            try{
-                while((message = reader.readLine()) != null){
-                    synchronized(this) {
-                		//TextArea n = (TextArea) root.lookup("#convoBox");
-                		//n.appendText(message + "\n");
-                    	String[] m = message.split(";");
-                    	if(chatText.containsKey(m[1])){
-                    		chatText.replace(m[1], message);
-                    	}
-                    	if(currentChat.equals(m[1])){
-                    		TextArea n = (TextArea) root.lookup("#convoBox");
-                    		n.setText(message);
-                    	}
-                	}
-                }
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-    }
-     
+	}
 
-    public void run() throws Exception{
-        //setUpNetworking();
-        initViewController();
-    }
-    
-    
-    //private ArrayList<String> chats = new ArrayList<>();
-    //private HashMap<String, String> chatText = new HashMap<>();
-    //the logout button is for debugging right now
-    private int f = 0;
-    @FXML
-    public void logoutOnClick(){
-    	f++;
-    	chatListView.getItems().add("test" + f);
-    	writer.println("@CHATS;" + "test" + f + ";"+ "quinn;ali");
-    	writer.flush();
-    	chats.add("test" + f);
-    	chatText.put("test" + f, new String(""));
-    }
-    
-    @FXML
-    public void messageBoxOnKeyPress(KeyEvent event) {
-    	if(event.getCode() == KeyCode.SHIFT){
-    		shiftPressed = true;
-    	}
-    	
-    	else if(event.getCode() == KeyCode.ENTER && shiftPressed == true){
-    		messageBox.appendText("\n");
-    	}
-    	
-    	else if(event.getCode() == KeyCode.ENTER && shiftPressed == false){
-        	if (enterPressed == false){
-        		if(!messageBox.getText().equals("")){
-        			//ex = "USR;CHAT;MSG"
-        			//server: "USR: MSG"
-        			enterPressed = true;
-        			String text = messageBox.getText();
-        	    	writer.println(username + ";" + currentChat + ";" + text);
-        	    	writer.flush();
+	@FXML
+	public void initialize() {
+		chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov, final String oldvalue, final String newvalue) {
+				currentChat = new String(newvalue);
+				convoBox.setText(chatText.get(newvalue));
+			}
+		});
+	}
 
-        			messageBox.setText("");
-        		}
-        	}
-        	else{
-        		messageBox.setText("");
-        	}
-        }
-    }
-    
-    @FXML
-    public void messageBoxOnKeyRelease(KeyEvent event){
-    	if(event.getCode() == KeyCode.SHIFT){
-    		shiftPressed = false;
-    	}
-    	
-    	if(event.getCode() == KeyCode.ENTER && shiftPressed == false){
-        	enterPressed = false;
-    		messageBox.setText("");
-    	}
-    }
+	private void initViewController() {
+		// Not sure if we need this
+	}
+	
+	public String getCurrentChat(){
+		return currentChat;
+	}
+
+	// ---------------------------- This is for GUI functionality
+	// ------------------------------
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
+		primaryStage.setTitle("Chatter");
+		primaryStage.setScene(new Scene(root, 637, 488));
+		primaryStage.setResizable(false);
+		primaryStage.show();
+
+		setUpNetworking();
+	}
+
+	private void setUpNetworking() throws Exception {
+		Socket socket = new Socket(hostIPAddress, hostPortNumber);
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new PrintWriter(socket.getOutputStream());
+		// Thread.sleep(20);
+		//writer.println("@LOGIN;" + username);
+		writer.println(username);
+		// writer.println("@REGISTER;" + username);
+		writer.flush();
+		System.out.println("Networking established with " + hostIPAddress);
+		Thread readerThread = new Thread(new IncomingReader(root));
+		readerThread.start();
+	}
+
+	class IncomingReader implements Runnable {
+		Parent root;
+
+		public IncomingReader(Parent root) {
+			this.root = root;
+		}
+
+		@Override
+		public void run() {
+			String message;
+			try {
+				while ((message = reader.readLine()) != null) {
+					synchronized (this) {
+						// TextArea n = (TextArea) root.lookup("#convoBox");
+						// n.appendText(message + "\n");
+						System.out.println(getCurrentChat());
+						String[] m = message.split(";");
+						if (chatText.containsKey(m[1])) {
+							String oldMessage = chatText.get(m[1]);
+							chatText.replace(m[1], oldMessage + m[0] + ": " + m[2] + "\n");
+						}
+						if (currentChat.equals(m[1])) {
+							TextArea n = (TextArea) root.lookup("#convoBox");
+							n.appendText(m[0] + ": " + m[2] + "\n");
+						}
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void run() throws Exception {
+		// setUpNetworking();
+		initViewController();
+	}
+
+	// private ArrayList<String> chats = new ArrayList<>();
+	// private HashMap<String, String> chatText = new HashMap<>();
+	// the logout button is for debugging right now
+	private int f = 0;
+
+	@FXML
+	public void logoutOnClick() {
+		f++;
+		chatListView.getItems().add("test" + f);
+		writer.println("@CHATS;" + "test" + f + ";" + "quinn");
+		writer.flush();
+		chats.add("test" + f);
+		chatText.put("test" + f, new String(""));
+	}
+
+	@FXML
+	public void messageBoxOnKeyPress(KeyEvent event) {
+		if (event.getCode() == KeyCode.SHIFT) {
+			shiftPressed = true;
+		}
+
+		else if (event.getCode() == KeyCode.ENTER && shiftPressed == true) {
+			messageBox.appendText("\n");
+		}
+
+		else if (event.getCode() == KeyCode.ENTER && shiftPressed == false) {
+			if (enterPressed == false) {
+				if (!messageBox.getText().equals("")) {
+					// ex = "USR;CHAT;MSG"
+					// server: "USR: MSG"
+					enterPressed = true;
+					String text = messageBox.getText();
+					writer.println(username + ";" + currentChat + ";" + text);
+					writer.flush();
+
+					messageBox.setText("");
+				}
+			} else {
+				messageBox.setText("");
+			}
+		}
+	}
+
+	@FXML
+	public void messageBoxOnKeyRelease(KeyEvent event) {
+		if (event.getCode() == KeyCode.SHIFT) {
+			shiftPressed = false;
+		}
+
+		if (event.getCode() == KeyCode.ENTER && shiftPressed == false) {
+			enterPressed = false;
+			messageBox.setText("");
+		}
+	}
 }
