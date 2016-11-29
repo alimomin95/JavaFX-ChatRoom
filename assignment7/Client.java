@@ -200,7 +200,7 @@ public class Client extends Application {
 		chats.add("test" + f);
 		chatText.put("test" + f, new String(""));
 	}
-
+	
 	@FXML
 	public void messageBoxOnKeyPress(KeyEvent event) {
 		if (event.getCode() == KeyCode.SHIFT) {
