@@ -1,6 +1,7 @@
 package assignment7;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -53,8 +54,8 @@ import javafx.collections.FXCollections;
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
 public class Client extends Application {
-	private String hostIPAddress = "127.0.0.1";
-	private int hostPortNumber = 5000;
+	private static String hostIPAddress = "127.0.0.1";
+	private static int hostPortNumber = 5000;
 	private static String username;
 	private static String password;
 
@@ -75,7 +76,7 @@ public class Client extends Application {
 	private TextField ipField;
 	@FXML
 	private TextField portField;
-	
+
 	// ------------------------------- GUI Components:
 	// ----------------------------------------
 	@FXML
@@ -98,6 +99,7 @@ public class Client extends Application {
 
 	// -------------------------------- GUI Variables:
 	// -----------------------------------------
+	private int state = 0;
 	private boolean enterPressed = false;
 	private boolean shiftPressed = false;
 
@@ -112,7 +114,7 @@ public class Client extends Application {
 	// ----------------------------------------------------------------------------------------
 
 	public static void main(String[] args) {
-		username = args[0];
+		//username = args[0];
 		try {
 			new Client().run();
 		} catch (Exception e) {
@@ -121,52 +123,59 @@ public class Client extends Application {
 		launch(args);
 
 	}
-	
 
 	@FXML
 	public void initialize() {
-		try{
-			//chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		try {
+			// chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 				@Override
-				public void changed(ObservableValue<? extends String> ov, final String oldvalue, final String newvalue) {
+				public void changed(ObservableValue<? extends String> ov, final String oldvalue,
+						final String newvalue) {
 					System.out.println(newvalue);
 					currentChat = new String(newvalue);
 					convoBox.setText(chatText.get(newvalue));
 				}
 			});
-			
-			ListChangeListener<String> multiSelection = new ListChangeListener<String>(){
-				
+
+			ListChangeListener<String> multiSelection = new ListChangeListener<String>() {
+
 				@Override
 				public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> changed) {
 					selectedPeople.clear();
-					for(String user : changed.getList()){
+					for (String user : changed.getList()) {
 						selectedPeople.add(user);
 					}
 				}
 			};
 			friendsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			friendsListView.getSelectionModel().getSelectedItems().addListener(multiSelection);
+		} catch (Exception e) {
 		}
-		catch(Exception e){}
-		
+
 	}
 
 	private void initViewController() {
 		// Not sure if we need this
 	}
-	
-	public String getCurrentChat(){
+
+	public String getCurrentChat() {
 		return currentChat;
 	}
 
 	// ---------------------------- This is for GUI functionality
 	// ------------------------------
-	//@Override
+	// @Override
 	public void loggedIn(Stage primaryStage) throws Exception {
+		username = usernameField.getText();
+		password = passwordField.getText();
+		
+		//hostIPAddress = ((ipField.getText().isEmpty())?("127.0.0.1"):(ipField.getText()));
+		//hostPortNumber = ((portField.getText().isEmpty())?(5000):(Integer.parseInt(portField.getText())));
+		
 		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
-		//Parent root2 = FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
+		// Parent root2 =
+		// FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root, 637, 488));
 		primaryStage.setResizable(false);
@@ -183,13 +192,13 @@ public class Client extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
-	
+
 	private void setUpNetworking() throws Exception {
 		Socket socket = new Socket(hostIPAddress, hostPortNumber);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new PrintWriter(socket.getOutputStream());
 		// Thread.sleep(20);
-		//writer.println("@LOGIN;" + username);
+		// writer.println("@LOGIN;" + username);
 		writer.println(username);
 		// writer.println("@REGISTER;" + username);
 		writer.flush();
@@ -212,34 +221,35 @@ public class Client extends Application {
 				while ((message = reader.readLine()) != null) {
 					synchronized (this) {
 						System.out.println(message);
-						if(message.charAt(0) == '@'){
+						if (message.charAt(0) == '@') {
 							String[] split = message.split(";");
 							String command = split[0];
-							if(command.equals("@CHATS")){
+							if (command.equals("@CHATS")) {
 								String action = split[1];
 								String users = split[3];
-								if(action.equals("new")){
+								if (action.equals("new")) {
 									ListView n = (ListView) root.lookup("#chatListViewID");
 									String chat = split[2];
 									n.getItems().add(chat);
 									chats.add(chat);
 									chatText.put(chat, new String(""));
 								}
-							}
-							else if(command.equals("@MESSAGE")){
+							} else if (command.equals("@MESSAGE")) {
 								String chat = split[1];
 								String user = split[2];
 								String servedMessage = split[3];
 								String oldMessage = chatText.get(chat);
 								chatText.replace(chat, oldMessage + user + ": " + servedMessage + "\n");
-								if(currentChat.equals(chat)){
+								if (currentChat.equals(chat)) {
 									TextArea n = (TextArea) root.lookup("#convoBox");
 									n.setText(oldMessage + user + ": " + servedMessage + "\n");
 								}
+							} else if (command.equals("@ERROR")) {
+								String errormessage = split[1];
+								System.out.println(errormessage);
+								//this adds the command to the javafx command queue ((I think??))
+								Platform.runLater(() -> AlertBox.display("Error", errormessage));
 							}
-						}
-						else if(message.equals("chatexist")){
-							//new AlertBox("Error!","Sorry, the chat already exists");
 						}
 					}
 				}
@@ -261,19 +271,17 @@ public class Client extends Application {
 
 	@FXML
 	public void logoutOnClick() {
-		/*f++;
-		chatListView.getItems().add("test" + f);
-		writer.println("@CHATS;" + "test" + f + ";" + username);
-		writer.flush();
-		chats.add("test" + f);
-		chatText.put("test" + f, new String(""));
-		*/
+		/*
+		 * f++; chatListView.getItems().add("test" + f);
+		 * writer.println("@CHATS;" + "test" + f + ";" + username);
+		 * writer.flush(); chats.add("test" + f); chatText.put("test" + f, new
+		 * String(""));
+		 */
 		f++;
 		friendsListView.getItems().add(chatName.getText());
-		
-		
+
 	}
-	
+
 	@FXML
 	public void messageBoxOnKeyPress(KeyEvent event) {
 		if (event.getCode() == KeyCode.SHIFT) {
@@ -292,7 +300,8 @@ public class Client extends Application {
 					enterPressed = true;
 					String text = messageBox.getText();
 					writer.println("@MESSAGE;" + currentChat + ";" + username + ";" + text);
-					//writer.println(username + ";" + currentChat + ";" + text);
+					// writer.println(username + ";" + currentChat + ";" +
+					// text);
 					writer.flush();
 
 					messageBox.setText("");
@@ -314,30 +323,30 @@ public class Client extends Application {
 			messageBox.setText("");
 		}
 	}
-	
+
 	@FXML
-	public void makeChatOnClick(){
+	public void makeChatOnClick() {
 		String message = "";
-		for(String s : selectedPeople){
+		for (String s : selectedPeople) {
 			message = message + ";" + s;
 		}
-		if(!chatName.getText().isEmpty()){
+		if (!chatName.getText().isEmpty()) {
 			String c = chatName.getText();
 			writer.println("@CHATS;new;" + c + ";" + username + message);
-			//writer.println("@CHATS;" + c + ";" + message);
-			//writer.println(c);
+			// writer.println("@CHATS;" + c + ";" + message);
+			// writer.println(c);
 			writer.flush();
 		}
 	}
-	
+
 	@FXML
-	public void loginOnClick(Event event) throws Exception{
-		((Node)(event.getSource())).getScene().getWindow().hide();
+	public void loginOnClick(Event event) throws Exception {
+		((Node) (event.getSource())).getScene().getWindow().hide();
 		loggedIn(new Stage());
 	}
-	
+
 	@FXML
-	public void registerOnClick(){
-		
+	public void registerOnClick() {
+
 	}
 }

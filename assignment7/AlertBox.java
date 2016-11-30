@@ -19,7 +19,6 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.application.Application;
 import javafx.geometry.*;
-
 public class AlertBox extends Application {
 
 	String title;

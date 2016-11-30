@@ -106,7 +106,7 @@ public class Server extends Observable {
                         	//notify the creator that the name already exists
                             String user = split[3];
                             PrintWriter w = individualPrinters.get(user);
-                            w.println("chatexist");
+                            w.println("@ERROR;Chat already exists");
                             w.flush();
                             c = null;
                         } else {
@@ -131,7 +131,7 @@ public class Server extends Observable {
 						    //notify the user that chat doesn't exist
                             String user = split[3];
                             PrintWriter w = individualPrinters.get(user);
-                            w.println("chatnotexist");
+                            w.println("@ERROR;Chat does not exist");
                             w.flush();
                             c = null;
                         }
@@ -147,7 +147,7 @@ public class Server extends Observable {
 						    //notify the user that the chat doesn't exist
                             String user = split[3];
                             PrintWriter w = individualPrinters.get(user);
-                            w.println("chatnotexist");
+                            w.println("@ERROR;Chat does not exist");
                             w.flush();
                             c = null;
                         }
@@ -162,7 +162,7 @@ public class Server extends Observable {
 									//notify user that user is already in chat
                                     String userName = split[3];
                                     PrintWriter w = individualPrinters.get(userName);
-                                    w.println("userexist");
+                                    w.println("@ERROR;User is already in chat");
                                     w.flush();
                                     c = null;
 								}
@@ -183,12 +183,14 @@ public class Server extends Observable {
                                 c.deleteObserver((onlineUsers.get(user)));
 							}
 							else{
+								/*
 								//complain somehow
                                 String userName = split[3];
                                 PrintWriter w = individualPrinters.get(userName);
-                                w.println("removefailed");
+                                w.println("@ERROR; ");
                                 w.flush();
                                 c = null;
+                                */
 							}
                         }
                     }
