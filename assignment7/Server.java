@@ -317,44 +317,47 @@ public class Server extends Observable {
             try{
                 while ((message = reader.readLine())!= null){
                     System.out.println("Server read: " + message);
-                    m = message.split(";");
-                    
-                    
-                    if (m[0].equals("@CHATS")) {
-                        if (currentChats.containsKey(m[1])) {
 
-                        } else {
-                            ChatObserver c = new ChatObserver();
-                            currentChats.put(m[1], c);
-                            historyOfChats.put(m[1], null);
-                            int numOfUsers = m.length - 2;
-                            for (int i = 0; i < numOfUsers; i++) {                            	
-                                c.usersInChat.add(m[i + 2]);
-                                c.addObserver(onlineUsers.get(m[i + 2]));
-                            }
-                            //c.changed();
-                            //c.notifyObservers("@CHATS");
-                        }
-                    }
-                    else if(onlineUsers.containsKey(m[0])) {
-                        if (currentChats.containsKey(m[1])) {
-                            if (m[2].equals("/leave")) {
-                                ChatObserver a = currentChats.get(m[1]);
-                                a.usersInChat.remove(m[0]);
-                                a.deleteObserver(onlineUsers.get(m[0]));
-                            } else if (m[2].equals("/history")) {
-                                PrintWriter p = individualPrinters.get(m[0]);
-                                p.println(historyOfChats.get(m[1]));
-                                p.flush();
-                            } else {
-                                ChatObserver a = currentChats.get(m[1]);
-                                a.changed();
-                                String outgoing = m[0] + ": " + m[2];
-                                a.notifyObservers(message);
-                                historyOfChats.replace(m[1], historyOfChats.get(m[1]) + "\n" + outgoing);
-                                a.unChanged();
-                            }
-                        }                         }
+                    processMessage(message);
+
+//                    m = message.split(";");
+//
+//
+//                    if (m[0].equals("@CHATS")) {
+//                        if (currentChats.containsKey(m[1])) {
+//
+//                        } else {
+//                            ChatObserver c = new ChatObserver();
+//                            currentChats.put(m[1], c);
+//                            historyOfChats.put(m[1], null);
+//                            int numOfUsers = m.length - 2;
+//                            for (int i = 0; i < numOfUsers; i++) {
+//                                c.usersInChat.add(m[i + 2]);
+//                                c.addObserver(onlineUsers.get(m[i + 2]));
+//                            }
+//                            //c.changed();
+//                            //c.notifyObservers("@CHATS");
+//                        }
+//                    }
+//                    else if(onlineUsers.containsKey(m[0])) {
+//                        if (currentChats.containsKey(m[1])) {
+//                            if (m[2].equals("/leave")) {
+//                                ChatObserver a = currentChats.get(m[1]);
+//                                a.usersInChat.remove(m[0]);
+//                                a.deleteObserver(onlineUsers.get(m[0]));
+//                            } else if (m[2].equals("/history")) {
+//                                PrintWriter p = individualPrinters.get(m[0]);
+//                                p.println(historyOfChats.get(m[1]));
+//                                p.flush();
+//                            } else {
+//                                ChatObserver a = currentChats.get(m[1]);
+//                                a.changed();
+//                                String outgoing = m[0] + ": " + m[2];
+//                                a.notifyObservers(message);
+//                                historyOfChats.replace(m[1], historyOfChats.get(m[1]) + "\n" + outgoing);
+//                                a.unChanged();
+//                            }
+//                        }                         }
                     }
             }catch (IOException e){
                 e.printStackTrace();
