@@ -176,7 +176,7 @@ public class Server extends Observable {
         	@CHATS;{add};{chat};[usr1];[usr2]...
         	@CHATS;{remove};{chat};[usr1];[usr2]...
         	
-        	@USER;{login, logout, register, rename, add, remove};etc
+        	@USER;{login, logout, register, rename, add, remove};{username};etc
         	@USER;{login};username;password
         	@USER;{logout};usernmae;password
         	@USER;{register};username;password
