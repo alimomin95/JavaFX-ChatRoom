@@ -102,6 +102,8 @@ public class Client extends Application {
 	private int state = 0;
 	private boolean enterPressed = false;
 	private boolean shiftPressed = false;
+	
+	private static Stage loginStage;
 
 	// these two variables keep track of the users chats
 	private static ArrayList<String> chats = new ArrayList<>();
@@ -184,6 +186,8 @@ public class Client extends Application {
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root, 637, 488));
 		primaryStage.setResizable(false);
+		
+		loginStage.close();
 
 		primaryStage.show();
 
@@ -198,6 +202,7 @@ public class Client extends Application {
 		// FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		//////////////////
 		
+		loginStage = primaryStage;
 		Parent root1 = FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root1, 637, 488));
@@ -389,7 +394,7 @@ public class Client extends Application {
 		String password = passwordField.getText();
 		writer.println("@LOGIN;" + username + ";" + username);
 		writer.flush();
-		((Node) (event.getSource())).getScene().getWindow().hide();
+		//((Node) (event.getSource())).getScene().getWindow().hide();
 		//loggedIn(new Stage());
 		
 	}
