@@ -20,9 +20,9 @@
       <Button fx:id="logout" layoutX="569.0" layoutY="2.0" mnemonicParsing="false" onAction="#logoutOnClick" text="Logout" />
       <TabPane layoutX="3.0" layoutY="-2.0" prefHeight="488.0" prefWidth="187.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab closable="false" text="People">
+          <Tab closable="false" text="Online">
                <content>
-                  <ListView fx:id="personListView" prefHeight="139.0" prefWidth="173.0" />
+                  <ListView id="onlineUserList" fx:id="onlineListView" prefHeight="139.0" prefWidth="173.0" />
                </content>
             </Tab>
             <Tab closable="false" text="Friends">
