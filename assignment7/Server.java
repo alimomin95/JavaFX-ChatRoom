@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
@@ -109,10 +110,12 @@ public class Server extends Observable {
                             w.flush();
                             c = null;
                         } else {
+                        	System.out.println("new chat created");
                             c = new ChatObserver();
                             currentChats.put(chat, c);
                             historyOfChats.put(chat, null);
-                            String[] userlist = message.split(";", 4)[4].split(";"); //lol
+                            System.out.println(Arrays.toString(message.split(";", 4)));
+                            String[] userlist = message.split(";", 4)[3].split(";"); //lol
                             for(String user : userlist){
                                 c.usersInChat.add(user);
                                 c.addObserver(onlineUsers.get(user));
@@ -217,12 +220,14 @@ public class Server extends Observable {
 					else if(split[1].equals("getOnlineUsers")){
 					    String userlist = null;
 					    List<String> l = new ArrayList<>(onlineUsers.keySet());
+					    System.out.println(l);
 					    int length = l.size();
 					    for(int i = 0; i < length; i ++){
 					        String temp = userlist + ";" + l.get(i);
 					        userlist = temp;
                         }
                         String userName = split[2];
+                        System.out.println(userlist);
                         PrintWriter w = individualPrinters.get(userName);
                         w.println(userlist);
                         w.flush();
@@ -236,7 +241,6 @@ public class Server extends Observable {
                         c.unChanged();
                     }
 				}
-				
 			}
 
         }

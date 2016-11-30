@@ -54,7 +54,7 @@ import javafx.collections.FXCollections;
 public class Client extends Application {
 	private String hostIPAddress = "127.0.0.1";
 	private int hostPortNumber = 5000;
-	private String username = "quinn";
+	private static String username;
 	private String password = "pswd";
 
 	private static BufferedReader reader;
@@ -101,6 +101,7 @@ public class Client extends Application {
 	// ----------------------------------------------------------------------------------------
 
 	public static void main(String[] args) {
+		username = args[0];
 		try {
 			new Client().run();
 		} catch (Exception e) {
@@ -109,6 +110,7 @@ public class Client extends Application {
 		launch(args);
 
 	}
+	
 
 	@FXML
 	public void initialize() {
@@ -187,16 +189,19 @@ public class Client extends Application {
 					synchronized (this) {
 						// TextArea n = (TextArea) root.lookup("#convoBox");
 						// n.appendText(message + "\n");
-						System.out.println(getCurrentChat());
+						System.out.println(message);
 						String[] m = message.split(";");
-						if (chatText.containsKey(m[1])) {
-							String oldMessage = chatText.get(m[1]);
-							chatText.replace(m[1], oldMessage + m[0] + ": " + m[2] + "\n");
+						try{
+							if (chatText.containsKey(m[1])) {
+								String oldMessage = chatText.get(m[1]);
+								chatText.replace(m[1], oldMessage + m[0] + ": " + m[2] + "\n");
+							}
+							if (currentChat.equals(m[1])) {
+								TextArea n = (TextArea) root.lookup("#convoBox");
+								n.appendText(m[0] + ": " + m[2] + "\n");
+							}
 						}
-						if (currentChat.equals(m[1])) {
-							TextArea n = (TextArea) root.lookup("#convoBox");
-							n.appendText(m[0] + ": " + m[2] + "\n");
-						}
+						catch(Exception e){}
 					}
 				}
 			} catch (IOException e) {
@@ -225,7 +230,7 @@ public class Client extends Application {
 		chatText.put("test" + f, new String(""));
 		*/
 		f++;
-		friendsListView.getItems().add("test" + f);
+		friendsListView.getItems().add(chatName.getText());
 		
 		
 	}
@@ -284,8 +289,14 @@ public class Client extends Application {
 		if(!chatName.getText().isEmpty()){
 			String c = chatName.getText();
 			//writer.println("@CHATS;new;" + c + ";" + username + ";" + message);
-			writer.println("@CHATS;" + c + ";" + message);
+			//writer.println("@CHATS;" + c + ";" + message);
+			writer.println(c);
 			writer.flush();
+			chatListView.getItems().add("nc");
+			chats.add("nc");
+			chatText.put("nc", new String(""));
+
+			
 		}
 	}
 }
