@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="488.0" prefWidth="637.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.Client">
@@ -24,6 +25,11 @@
                   <ListView fx:id="personListView" prefHeight="139.0" prefWidth="173.0" />
                </content>
             </Tab>
+            <Tab text="Friends">
+               <content>
+                  <ListView fx:id="friendsListView" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </Tab>
           <Tab closable="false" text="Chats">
                <content>
                   <ListView fx:id="chatListView" prefHeight="458.0" prefWidth="173.0" />
@@ -31,5 +37,7 @@
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="makeChat" layoutX="233.0" layoutY="2.0" mnemonicParsing="false" onAction="#makeChatOnClick" text="Make chat" />
+      <TextField fx:id="chatName" layoutX="304.0" layoutY="2.0" />
    </children>
 </AnchorPane>

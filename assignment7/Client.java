@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -76,6 +77,12 @@ public class Client extends Application {
 	private ListView<String> chatListView;
 	@FXML
 	private ListView<String> personListView;
+	@FXML
+	private ListView<String> friendsListView;
+	@FXML
+	private Button makeChat;
+	@FXML
+	private TextField chatName;
 	// ----------------------------------------------------------------------------------------
 
 	// -------------------------------- GUI Variables:
@@ -88,7 +95,8 @@ public class Client extends Application {
 	private static HashMap<String, String> chatText = new HashMap<>();
 	public static String currentChat;
 
-	private ArrayList<PersonCell> friendList = new ArrayList<PersonCell>();
+	private ArrayList<String> friendList = new ArrayList<String>();
+	private ArrayList<String> selectedPeople = new ArrayList<>();
 
 	// ----------------------------------------------------------------------------------------
 
@@ -104,13 +112,29 @@ public class Client extends Application {
 
 	@FXML
 	public void initialize() {
+		//chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, final String oldvalue, final String newvalue) {
+				System.out.println(newvalue);
 				currentChat = new String(newvalue);
 				convoBox.setText(chatText.get(newvalue));
 			}
 		});
+		
+		ListChangeListener<String> multiSelection = new ListChangeListener<String>(){
+			
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> changed) {
+				selectedPeople.clear();
+				for(String user : changed.getList()){
+					selectedPeople.add(user);
+				}
+			}
+		};
+		friendsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		friendsListView.getSelectionModel().getSelectedItems().addListener(multiSelection);
+		
 	}
 
 	private void initViewController() {
@@ -193,12 +217,17 @@ public class Client extends Application {
 
 	@FXML
 	public void logoutOnClick() {
-		f++;
+		/*f++;
 		chatListView.getItems().add("test" + f);
 		writer.println("@CHATS;" + "test" + f + ";" + username);
 		writer.flush();
 		chats.add("test" + f);
 		chatText.put("test" + f, new String(""));
+		*/
+		f++;
+		friendsListView.getItems().add("test" + f);
+		
+		
 	}
 	
 	@FXML
@@ -238,6 +267,25 @@ public class Client extends Application {
 		if (event.getCode() == KeyCode.ENTER && shiftPressed == false) {
 			enterPressed = false;
 			messageBox.setText("");
+		}
+	}
+	
+	@FXML
+	public void makeChatOnClick(){
+		String message = "";
+		for(String s : selectedPeople){
+			if(!message.equals("")){
+				message = message + ";" + s;
+			}
+			else{
+				message = s;
+			}
+		}
+		if(!chatName.getText().isEmpty()){
+			String c = chatName.getText();
+			//writer.println("@CHATS;new;" + c + ";" + username + ";" + message);
+			writer.println("@CHATS;" + c + ";" + message);
+			writer.flush();
 		}
 	}
 }
