@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -66,6 +67,29 @@ public class Server extends Observable {
                 e.printStackTrace();
             }
         }
+
+        /*
+        	commands:
+        	@CHATS;{new, delete, rename, add, remove};{chat};[username];etc
+        	@CHATS;{new};[chat];[username];[usr1];[usr2]...
+        	@CHATS;{delete};[chat];[username]
+        	@CHATS;{rename};{chat};[username];{newname}
+        	@CHATS;{add};{chat};[username];[usr1];[usr2]...
+        	@CHATS;{remove};{chat};[username];[usr1];[usr2]...
+
+        	@USER;{login, logout, register, rename, add, remove};etc
+        	@USER;{login};username;password
+        	@USER;{logout};usernmae;password
+        	@USER;{register};username;password
+        	@USER;{rename};username;password;newname
+        	@USER;{addfriend};username;friend
+        	@USER;{removefriend};username;friend
+
+        	@USER;{getOnlineUsers};username
+
+        	@MESSAGE;{chat};{user};{message}
+
+        */
         
         private void processMessage(String message){
 			String[] split;
@@ -77,12 +101,17 @@ public class Server extends Observable {
 					ChatObserver c = null;
 					if(split[1].equals("new")){ //make new chat
                         if (currentChats.containsKey(chat)){
-                        	//should notify the creator that the name already exists
+                        	//notify the creator that the name already exists
+                            String user = split[3];
+                            PrintWriter w = individualPrinters.get(user);
+                            w.println("chatexist");
+                            w.flush();
+                            c = null;
                         } else {
                             c = new ChatObserver();
                             currentChats.put(chat, c);
                             historyOfChats.put(chat, null);
-                            String[] userlist = message.split(";", 3)[3].split(";"); //lol
+                            String[] userlist = message.split(";", 4)[4].split(";"); //lol
                             for(String user : userlist){
                                 c.usersInChat.add(user);
                                 c.addObserver(onlineUsers.get(user));
@@ -94,6 +123,14 @@ public class Server extends Observable {
 							c = currentChats.get(chat);
 							currentChats.remove(chat);
 						}
+						else{
+						    //notify the user that chat doesn't exist
+                            String user = split[3];
+                            PrintWriter w = individualPrinters.get(user);
+                            w.println("chatnotexist");
+                            w.flush();
+                            c = null;
+                        }
 					}
 					else if(split[1].equals("rename")){ //rename existing chat
 						if(currentChats.containsKey(chat)){
@@ -102,15 +139,28 @@ public class Server extends Observable {
 							currentChats.remove(chat);
 							currentChats.put(newname, c);
 						}
+						else{
+						    //notify the user that the chat doesn't exist
+                            String user = split[3];
+                            PrintWriter w = individualPrinters.get(user);
+                            w.println("chatnotexist");
+                            w.flush();
+                            c = null;
+                        }
 			
 					}
 					else if(split[1].equals("add")){ //add n users to chat
 						if(currentChats.containsKey(chat)){
 							c = currentChats.get(chat);	
-                            String[] userlist = message.split(";", 3)[3].split(";"); //lol
+                            String[] userlist = message.split(";", 4)[4].split(";"); //lol
 							for(String user : userlist){
 								if(c.usersInChat.contains(user)){
-									//complain somehow
+									//notify user that user is already in chat
+                                    String userName = split[3];
+                                    PrintWriter w = individualPrinters.get(userName);
+                                    w.println("userexist");
+                                    w.flush();
+                                    c = null;
 								}
 								else{
 									c.usersInChat.add(user);
@@ -122,7 +172,7 @@ public class Server extends Observable {
 					}
 					else if(split[1].equals("remove")){ //remove n users from chat
 						c = currentChats.get(chat);	
-                        String[] userlist = message.split(";", 3)[3].split(";"); //lol
+                        String[] userlist = message.split(";", 4)[4].split(";"); //lol
 						for(String user : userlist){
 							if(c.usersInChat.contains(user)){
 								c.usersInChat.remove(user);
@@ -130,9 +180,14 @@ public class Server extends Observable {
 							}
 							else{
 								//complain somehow
+                                String userName = split[3];
+                                PrintWriter w = individualPrinters.get(userName);
+                                w.println("removefailed");
+                                w.flush();
+                                c = null;
 							}
-							}
-						}
+                        }
+                    }
 					if(c != null){
 						c.changed();
 						c.notifyObservers(message); //tell included users that a new chat was made
@@ -158,9 +213,27 @@ public class Server extends Observable {
 					else if(split[1].equals("remove")){
 			
 					}
+					else if(split[1].equals("getOnlineUsers")){
+					    String userlist = null;
+					    List<String> l = new ArrayList<>(onlineUsers.keySet());
+					    int length = l.size();
+					    for(int i = 0; i < length; i ++){
+					        String temp = userlist + ";" + l.get(i);
+					        userlist = temp;
+                        }
+                        String userName = split[2];
+                        PrintWriter w = individualPrinters.get(userName);
+                        w.println(userlist);
+                        w.flush();
+                    }
 				}
 				else if(split[0].equals("@MESSAGE")){
-
+                    if(currentChats.containsKey(split[1])){
+                        ChatObserver c = currentChats.get(split[1]);
+                        c.changed();
+                        c.notifyObservers(message);
+                        c.unChanged();
+                    }
 				}
 				
 			}
