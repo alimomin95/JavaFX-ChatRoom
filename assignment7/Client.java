@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,7 +56,7 @@ public class Client extends Application {
 	private String hostIPAddress = "127.0.0.1";
 	private int hostPortNumber = 5000;
 	private static String username;
-	private String password = "pswd";
+	private static String password;
 
 	private static BufferedReader reader;
 	private static PrintWriter writer;
@@ -65,6 +66,16 @@ public class Client extends Application {
 
 	public Parent root;
 
+	// login GUI components
+	@FXML
+	private TextField usernameField;
+	@FXML
+	private PasswordField passwordField;
+	@FXML
+	private TextField ipField;
+	@FXML
+	private TextField portField;
+	
 	// ------------------------------- GUI Components:
 	// ----------------------------------------
 	@FXML
@@ -114,28 +125,31 @@ public class Client extends Application {
 
 	@FXML
 	public void initialize() {
-		//chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> ov, final String oldvalue, final String newvalue) {
-				System.out.println(newvalue);
-				currentChat = new String(newvalue);
-				convoBox.setText(chatText.get(newvalue));
-			}
-		});
-		
-		ListChangeListener<String> multiSelection = new ListChangeListener<String>(){
-			
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> changed) {
-				selectedPeople.clear();
-				for(String user : changed.getList()){
-					selectedPeople.add(user);
+		try{
+			//chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+			chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> ov, final String oldvalue, final String newvalue) {
+					System.out.println(newvalue);
+					currentChat = new String(newvalue);
+					convoBox.setText(chatText.get(newvalue));
 				}
-			}
-		};
-		friendsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		friendsListView.getSelectionModel().getSelectedItems().addListener(multiSelection);
+			});
+			
+			ListChangeListener<String> multiSelection = new ListChangeListener<String>(){
+				
+				@Override
+				public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> changed) {
+					selectedPeople.clear();
+					for(String user : changed.getList()){
+						selectedPeople.add(user);
+					}
+				}
+			};
+			friendsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+			friendsListView.getSelectionModel().getSelectedItems().addListener(multiSelection);
+		}
+		catch(Exception e){}
 		
 	}
 
@@ -149,9 +163,10 @@ public class Client extends Application {
 
 	// ---------------------------- This is for GUI functionality
 	// ------------------------------
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+	//@Override
+	public void loggedIn(Stage primaryStage) throws Exception {
 		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
+		//Parent root2 = FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root, 637, 488));
 		primaryStage.setResizable(false);
@@ -160,6 +175,15 @@ public class Client extends Application {
 		setUpNetworking();
 	}
 
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		Parent root1 = FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
+		primaryStage.setTitle("Chatter");
+		primaryStage.setScene(new Scene(root1, 637, 488));
+		primaryStage.setResizable(false);
+		primaryStage.show();
+	}
+	
 	private void setUpNetworking() throws Exception {
 		Socket socket = new Socket(hostIPAddress, hostPortNumber);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -215,7 +239,7 @@ public class Client extends Application {
 							}
 						}
 						else if(message.equals("chatexist")){
-							new AlertBox().display("Error!","Sorry, the chat already exists");
+							//new AlertBox("Error!","Sorry, the chat already exists");
 						}
 					}
 				}
@@ -304,5 +328,16 @@ public class Client extends Application {
 			//writer.println(c);
 			writer.flush();
 		}
+	}
+	
+	@FXML
+	public void loginOnClick(Event event) throws Exception{
+		((Node)(event.getSource())).getScene().getWindow().hide();
+		loggedIn(new Stage());
+	}
+	
+	@FXML
+	public void registerOnClick(){
+		
 	}
 }
