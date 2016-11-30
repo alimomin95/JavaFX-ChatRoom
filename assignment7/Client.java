@@ -189,25 +189,33 @@ public class Client extends Application {
 					synchronized (this) {
 						System.out.println(message);
 						if(message.charAt(0) == '@'){
-							String[] split = message.split(";");	
-							if(split[0].equals("@CHATS")){
-								if(split[1].equals("new")){
+							String[] split = message.split(";");
+							String command = split[0];
+							if(command.equals("@CHATS")){
+								String action = split[1];
+								String users = split[3];
+								if(action.equals("new")){
 									ListView n = (ListView) root.lookup("#chatListViewID");
 									String chat = split[2];
 									n.getItems().add(chat);
 									chats.add(chat);
 									chatText.put(chat, new String(""));
-
 								}
 							}
-							else if(split[0].equals("@MESSAGE")){
-								String oldMessage = chatText.get(split[1]);
-								chatText.replace(split[1], oldMessage + split[2] + ": " + split[3] + "\n");
-								if(currentChat.equals(split[1])){
+							else if(command.equals("@MESSAGE")){
+								String chat = split[1];
+								String user = split[2];
+								String servedMessage = split[3];
+								String oldMessage = chatText.get(chat);
+								chatText.replace(chat, oldMessage + user + ": " + servedMessage + "\n");
+								if(currentChat.equals(chat)){
 									TextArea n = (TextArea) root.lookup("#convoBox");
-									n.setText(oldMessage + split[3] + "\n");
+									n.setText(oldMessage + user + ": " + servedMessage + "\n");
 								}
 							}
+						}
+						else if(message.equals("chatexist")){
+							new AlertBox().display("Error!","Sorry, the chat already exists");
 						}
 					}
 				}
