@@ -264,6 +264,7 @@ public class Server extends Observable {
         	@USER;{addfriend};username;friend
         	@USER;{removefriend};username;friend
         	
+        	
         	@MESSAGE;{chat};{user};{message}
         
         */
