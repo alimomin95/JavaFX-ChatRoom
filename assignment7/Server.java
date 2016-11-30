@@ -156,7 +156,7 @@ public class Server extends Observable {
 					else if(split[1].equals("add")){ //add n users to chat
 						if(currentChats.containsKey(chat)){
 							c = currentChats.get(chat);	
-                            String[] userlist = message.split(";", 4)[4].split(";"); //lol
+                            String[] userlist = message.split(";", 4)[3].split(";"); //lol
 							for(String user : userlist){
 								if(c.usersInChat.contains(user)){
 									//notify user that user is already in chat
@@ -176,7 +176,7 @@ public class Server extends Observable {
 					}
 					else if(split[1].equals("remove")){ //remove n users from chat
 						c = currentChats.get(chat);	
-                        String[] userlist = message.split(";", 4)[4].split(";"); //lol
+                        String[] userlist = message.split(";", 4)[3].split(";"); //lol
 						for(String user : userlist){
 							if(c.usersInChat.contains(user)){
 								c.usersInChat.remove(user);
@@ -201,13 +201,8 @@ public class Server extends Observable {
 					}
 				}
 				else if(split[0].equals("@USER")){
-					if(split[1].equals("login")){
-			
-					}
-					else if(split[1].equals("logout")){
-			
-					}
-					else if(split[1].equals("register")){
+					String username = split[2];
+					if(split[1].equals("logout")){
 			
 					}
 					else if(split[1].equals("rename")){
@@ -220,7 +215,7 @@ public class Server extends Observable {
 			
 					}
 					else if(split[1].equals("getOnlineUsers")){
-					    String userlist = null;
+					    String userlist = "@USER;online";
 					    List<String> l = new ArrayList<>(onlineUsers.keySet());
 					    System.out.println(l);
 					    int length = l.size();
@@ -228,9 +223,8 @@ public class Server extends Observable {
 					        String temp = userlist + ";" + l.get(i);
 					        userlist = temp;
                         }
-                        String userName = split[2];
                         System.out.println(userlist);
-                        PrintWriter w = individualPrinters.get(userName);
+                        PrintWriter w = individualPrinters.get(username);
                         w.println(userlist);
                         w.flush();
                     }

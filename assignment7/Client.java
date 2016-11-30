@@ -88,7 +88,7 @@ public class Client extends Application {
 	@FXML
 	private ListView<String> chatListView;
 	@FXML
-	private ListView<String> personListView;
+	private ListView<String> onlineListView;
 	@FXML
 	private ListView<String> friendsListView;
 	@FXML
@@ -167,21 +167,23 @@ public class Client extends Application {
 	// ------------------------------
 	// @Override
 	public void loggedIn(Stage primaryStage) throws Exception {
-		username = usernameField.getText();
-		password = passwordField.getText();
 		
 		//hostIPAddress = ((ipField.getText().isEmpty())?("127.0.0.1"):(ipField.getText()));
 		//hostPortNumber = ((portField.getText().isEmpty())?(5000):(Integer.parseInt(portField.getText())));
-		
+
 		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
 		// Parent root2 =
 		// FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root, 637, 488));
 		primaryStage.setResizable(false);
+		
+		setUpNetworking();
+		
 		primaryStage.show();
 
-		setUpNetworking();
+
+
 	}
 
 	@Override
@@ -245,6 +247,16 @@ public class Client extends Application {
 									TextArea n = (TextArea) root.lookup("#convoBox");
 									n.setText(oldMessage + user + ": " + servedMessage + "\n");
 								}
+							} else if(command.equals("@USER")){
+								String action = split[1];
+								if(action.equals("online")){
+									@SuppressWarnings("unchecked")
+									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
+									for(String u : message.split(";", 3)[2].split(";")){
+										n.getItems().add(u);
+									}
+								}
+								
 							} else if (command.equals("@ERROR")) {
 								String errormessage = split[1];
 								System.out.println(errormessage);
@@ -333,15 +345,17 @@ public class Client extends Application {
 		}
 		if (!chatName.getText().isEmpty()) {
 			String c = chatName.getText();
-			writer.println("@CHATS;new;" + c + ";" + username + message);
+			//writer.println("@CHATS;new;" + c + ";" + username + message);
 			// writer.println("@CHATS;" + c + ";" + message);
-			// writer.println(c);
+			writer.println(c);
 			writer.flush();
 		}
 	}
 
 	@FXML
 	public void loginOnClick(Event event) throws Exception {
+		username = usernameField.getText();
+		password = passwordField.getText();
 		((Node) (event.getSource())).getScene().getWindow().hide();
 		loggedIn(new Stage());
 	}
