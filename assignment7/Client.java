@@ -106,7 +106,7 @@ public class Client extends Application {
 	// these two variables keep track of the users chats
 	private static ArrayList<String> chats = new ArrayList<>();
 	private static HashMap<String, String> chatText = new HashMap<>();
-	public static String currentChat;
+	public static String currentChat = "";
 
 	private ArrayList<String> friendList = new ArrayList<String>();
 	private ArrayList<String> selectedPeople = new ArrayList<>();
@@ -228,9 +228,10 @@ public class Client extends Application {
 								String action = split[1];
 								String users = split[3];
 								if (action.equals("new")) {
-									ListView n = (ListView) root.lookup("#chatListViewID");
+									@SuppressWarnings("unchecked")
+									ListView<String> n = (ListView<String>) root.lookup("#chatListViewID");
 									String chat = split[2];
-									n.getItems().add(chat);
+									Platform.runLater(() -> n.getItems().add(chat));
 									chats.add(chat);
 									chatText.put(chat, new String(""));
 								}
