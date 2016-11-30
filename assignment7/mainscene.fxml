@@ -25,7 +25,7 @@
                   <ListView fx:id="personListView" prefHeight="139.0" prefWidth="173.0" />
                </content>
             </Tab>
-            <Tab text="Friends">
+            <Tab closable="false" text="Friends">
                <content>
                   <ListView fx:id="friendsListView" prefHeight="200.0" prefWidth="200.0" />
                </content>
