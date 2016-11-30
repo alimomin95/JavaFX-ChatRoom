@@ -231,7 +231,7 @@ public class Client extends Application {
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#chatListViewID");
 									String chat = split[2];
-									Platform.runLater(() -> n.getItems().add(chat));
+									javafx.application.Platform.runLater(() -> n.getItems().add(chat));
 									chats.add(chat);
 									chatText.put(chat, new String(""));
 								}
