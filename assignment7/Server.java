@@ -18,6 +18,8 @@ import java.util.Observable;
  */
 public class Server extends Observable {
 
+    public HashMap<String, String> loginMap = new HashMap<>();
+
     public HashMap<String, PrintWriter> individualPrinters = new HashMap<>();
 
     public HashMap<String, ClientObserver> onlineUsers = new HashMap<>();
@@ -42,14 +44,63 @@ public class Server extends Observable {
             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
             ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
             BufferedReader tempReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            while (true){
-                if((message = tempReader.readLine())!= null){
-                    individualPrinters.put(message, printWriter);
-                    onlineUsers.put(message, writer);
-                    System.out.println(message);
-                    break;
+            //User sends commands to login or register
+            //login command: @LOGIN;{username};{password}
+            //register command: @REGISTER;{username};{password}
+
+            while((message = tempReader.readLine())!= null){
+                String[] split;
+                if(message.charAt(0) == '@'){
+                    split = message.split(";");
+                    String command = split[0];
+                    String username = split[1];
+                    String password = split[2];
+                    if(command.equals("@LOGIN")){
+                        if(loginMap.containsKey(username)){
+                            if(loginMap.get(username).equals(password)){
+                                printWriter.print("@LOGIN;successful");
+                                printWriter.flush();
+                                System.out.println(username);
+                                individualPrinters.put(username, printWriter);
+                                onlineUsers.put(username, writer);
+                                //Below notifies the current logged in users that a new user came online
+                                String userlist = "@USER;nowOnline";
+                                List<String> l = new ArrayList<>(onlineUsers.keySet());
+                                System.out.println(l);
+                                int length = l.size();
+                                for(int i = 0; i < length; i ++){
+                                    String temp = userlist + ";" + l.get(i);
+                                    userlist = temp;
+                                }
+                                this.setChanged();
+                                this.notifyObservers(userlist);
+                                this.clearChanged();
+                                break;
+                            }
+                            else{
+                                printWriter.print("@LOGIN;incorrectPassword");
+                                printWriter.flush();
+                            }
+                        }
+                        else{
+                            printWriter.print("@LOGIN;failed");
+                            printWriter.flush();
+                        }
+                    }
+                    else if(command.equals("@REGISTER")){
+                        if(loginMap.containsKey(username)){
+                            printWriter.print("@REGISTER;failed");
+                            printWriter.flush();
+                        }
+                        else{
+                            loginMap.put(username, password);
+                            printWriter.print("@REGISTER;successful");
+                            printWriter.flush();
+                        }
+                    }
                 }
             }
+
             Thread t = new Thread(new ClientHandler(clientSocket));
             t.start();
             this.addObserver(writer);
