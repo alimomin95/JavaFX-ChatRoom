@@ -187,21 +187,28 @@ public class Client extends Application {
 			try {
 				while ((message = reader.readLine()) != null) {
 					synchronized (this) {
-						// TextArea n = (TextArea) root.lookup("#convoBox");
-						// n.appendText(message + "\n");
 						System.out.println(message);
-						String[] m = message.split(";");
-						try{
-							if (chatText.containsKey(m[1])) {
-								String oldMessage = chatText.get(m[1]);
-								chatText.replace(m[1], oldMessage + m[0] + ": " + m[2] + "\n");
+						if(message.charAt(0) == '@'){
+							String[] split = message.split(";");	
+							if(split[0].equals("@CHATS")){
+								if(split[1].equals("new")){
+									ListView n = (ListView) root.lookup("#chatListViewID");
+									String chat = split[2];
+									n.getItems().add(chat);
+									chats.add(chat);
+									chatText.put(chat, new String(""));
+
+								}
 							}
-							if (currentChat.equals(m[1])) {
-								TextArea n = (TextArea) root.lookup("#convoBox");
-								n.appendText(m[0] + ": " + m[2] + "\n");
+							else if(split[0].equals("@MESSAGE")){
+								String oldMessage = chatText.get(split[1]);
+								chatText.replace(split[1], oldMessage + split[2] + ": " + split[3] + "\n");
+								if(currentChat.equals(split[1])){
+									TextArea n = (TextArea) root.lookup("#convoBox");
+									n.setText(oldMessage + split[3] + "\n");
+								}
 							}
 						}
-						catch(Exception e){}
 					}
 				}
 			} catch (IOException e) {
@@ -292,11 +299,6 @@ public class Client extends Application {
 			//writer.println("@CHATS;" + c + ";" + message);
 			writer.println(c);
 			writer.flush();
-			chatListView.getItems().add("nc");
-			chats.add("nc");
-			chatText.put("nc", new String(""));
-
-			
 		}
 	}
 }
