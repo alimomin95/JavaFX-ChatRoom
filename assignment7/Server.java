@@ -86,7 +86,7 @@ public class Server extends Observable {
         	@USER;{rename};username;password;newname
         	@USER;{addfriend};username;friend
         	@USER;{removefriend};username;friend
-
+            @USER;{OnlineUsers};username;usr1;usr2...
         	@USER;{getOnlineUsers};username
 
         	@MESSAGE;{chat};{user};{message}
