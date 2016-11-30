@@ -39,6 +39,7 @@ public class Server extends Observable {
     private void setUpNetworking() throws Exception{
         ServerSocket serverSocket = new ServerSocket(5000);
         String message;
+        loginMap.put("quinn", "password");
         while(true){
             Socket clientSocket = serverSocket.accept();
             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
@@ -49,6 +50,7 @@ public class Server extends Observable {
             //register command: @REGISTER;{username};{password}
 
             while((message = tempReader.readLine())!= null){
+            	System.out.println(message);
                 String[] split;
                 if(message.charAt(0) == '@'){
                     split = message.split(";");
@@ -58,7 +60,7 @@ public class Server extends Observable {
                     if(command.equals("@LOGIN")){
                         if(loginMap.containsKey(username)){
                             if(loginMap.get(username).equals(password)){
-                                printWriter.print("@LOGIN;successful");
+                                printWriter.println("@LOGIN;successful");
                                 printWriter.flush();
                                 System.out.println(username);
                                 individualPrinters.put(username, printWriter);
@@ -78,23 +80,23 @@ public class Server extends Observable {
                                 break;
                             }
                             else{
-                                printWriter.print("@LOGIN;incorrectPassword");
+                                printWriter.println("@LOGIN;incorrectPassword");
                                 printWriter.flush();
                             }
                         }
                         else{
-                            printWriter.print("@LOGIN;failed");
+                            printWriter.println("@LOGIN;failed");
                             printWriter.flush();
                         }
                     }
                     else if(command.equals("@REGISTER")){
                         if(loginMap.containsKey(username)){
-                            printWriter.print("@REGISTER;failed");
+                            printWriter.println("@REGISTER;failed");
                             printWriter.flush();
                         }
                         else{
                             loginMap.put(username, password);
-                            printWriter.print("@REGISTER;successful");
+                            printWriter.println("@REGISTER;successful");
                             printWriter.flush();
                         }
                     }

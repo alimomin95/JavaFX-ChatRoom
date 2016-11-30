@@ -166,11 +166,12 @@ public class Client extends Application {
 	// ---------------------------- This is for GUI functionality
 	// ------------------------------
 	// @Override
-	public void loggedIn(Stage primaryStage) throws Exception {
+	public void loggedIn(){
 		
 		//hostIPAddress = ((ipField.getText().isEmpty())?("127.0.0.1"):(ipField.getText()));
 		//hostPortNumber = ((portField.getText().isEmpty())?(5000):(Integer.parseInt(portField.getText())));
 
+		/*
 		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
 		// Parent root2 =
 		// FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
@@ -178,8 +179,12 @@ public class Client extends Application {
 		primaryStage.setScene(new Scene(root, 637, 488));
 		primaryStage.setResizable(false);
 		
-		setUpNetworking();
-		
+		*/
+		Stage primaryStage = new Stage();
+		primaryStage.setTitle("Chatter");
+		primaryStage.setScene(new Scene(root, 637, 488));
+		primaryStage.setResizable(false);
+
 		primaryStage.show();
 
 
@@ -188,11 +193,17 @@ public class Client extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
+		// Parent root2 =
+		// FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
+		//////////////////
+		
 		Parent root1 = FXMLLoader.load(getClass().getResource("loginscreen.fxml"));
 		primaryStage.setTitle("Chatter");
 		primaryStage.setScene(new Scene(root1, 637, 488));
 		primaryStage.setResizable(false);
 		primaryStage.show();
+		setUpNetworking();
 	}
 
 	private void setUpNetworking() throws Exception {
@@ -201,9 +212,9 @@ public class Client extends Application {
 		writer = new PrintWriter(socket.getOutputStream());
 		// Thread.sleep(20);
 		// writer.println("@LOGIN;" + username);
-		writer.println(username);
+		//writer.println(username);
 		// writer.println("@REGISTER;" + username);
-		writer.flush();
+		//writer.flush();
 		System.out.println("Networking established with " + hostIPAddress);
 		Thread readerThread = new Thread(new IncomingReader(root));
 		readerThread.start();
@@ -262,6 +273,8 @@ public class Client extends Application {
 								System.out.println(errormessage);
 								//this adds the command to the javafx command queue ((I think??))
 								Platform.runLater(() -> AlertBox.display("Error", errormessage));
+							} else if (command.equals("@LOGIN")){
+								Platform.runLater(() -> loggedIn());
 							}
 						}
 					}
@@ -354,10 +367,13 @@ public class Client extends Application {
 
 	@FXML
 	public void loginOnClick(Event event) throws Exception {
-		username = usernameField.getText();
-		password = passwordField.getText();
+		String username = usernameField.getText();
+		String password = passwordField.getText();
+		writer.println("@LOGIN;" + username + ";" + username);
+		writer.flush();
 		((Node) (event.getSource())).getScene().getWindow().hide();
-		loggedIn(new Stage());
+		//loggedIn(new Stage());
+		
 	}
 
 	@FXML
