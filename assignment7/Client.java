@@ -259,7 +259,8 @@ public class Client extends Application {
 					// server: "USR: MSG"
 					enterPressed = true;
 					String text = messageBox.getText();
-					writer.println(username + ";" + currentChat + ";" + text);
+					writer.println("@MESSAGE;" + currentChat + ";" + username + ";" + text);
+					//writer.println(username + ";" + currentChat + ";" + text);
 					writer.flush();
 
 					messageBox.setText("");
@@ -286,18 +287,13 @@ public class Client extends Application {
 	public void makeChatOnClick(){
 		String message = "";
 		for(String s : selectedPeople){
-			if(!message.equals("")){
-				message = message + ";" + s;
-			}
-			else{
-				message = s;
-			}
+			message = message + ";" + s;
 		}
 		if(!chatName.getText().isEmpty()){
 			String c = chatName.getText();
-			//writer.println("@CHATS;new;" + c + ";" + username + ";" + message);
+			writer.println("@CHATS;new;" + c + ";" + username + message);
 			//writer.println("@CHATS;" + c + ";" + message);
-			writer.println(c);
+			//writer.println(c);
 			writer.flush();
 		}
 	}
