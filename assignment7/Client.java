@@ -274,7 +274,25 @@ public class Client extends Application {
 								//this adds the command to the javafx command queue ((I think??))
 								Platform.runLater(() -> AlertBox.display("Error", errormessage));
 							} else if (command.equals("@LOGIN")){
-								Platform.runLater(() -> loggedIn());
+								String state = split[1];
+								if (state.equals("successful")) {
+									Platform.runLater(() -> loggedIn());
+								} else if (state.equals("incorrectPassword")){
+									//AlertBox reason -- incorrect password
+									Platform.runLater(() -> AlertBox.display("Error", "Incorrect Password"));
+								} else if (state.equals("failed")){
+									//AlertBox reason -- need to register
+									Platform.runLater(() -> AlertBox.display("Error", "Need to register"));
+								}
+							} else if (command.equals("@REGISTER")){
+								String state = split[1];
+								if (state.equals("successful")){
+									//AlertBox reason -- registration successful
+									Platform.runLater(() -> AlertBox.display("Success", "Registration Successful!"));
+								} else if (state.equals("failed")){
+									//AlertBox reason -- username already exists
+									Platform.runLater(() -> AlertBox.display("Error", "Username already exists"));
+								}
 							}
 						}
 					}
