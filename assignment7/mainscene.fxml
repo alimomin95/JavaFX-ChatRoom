@@ -32,7 +32,7 @@
             </Tab>
           <Tab closable="false" text="Chats">
                <content>
-                  <ListView fx:id="chatListView" prefHeight="458.0" prefWidth="173.0" />
+                  <ListView id="chatListViewID" fx:id="chatListView" prefHeight="458.0" prefWidth="173.0" />
                </content>
             </Tab>
         </tabs>
