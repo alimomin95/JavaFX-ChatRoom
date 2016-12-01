@@ -55,8 +55,8 @@ import javafx.collections.FXCollections;
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
 public class ClientMain extends Application {
-	private static String hostIPAddress = "127.0.0.1";
-	//private static String hostIPAddress = "10.145.84.177";
+	//private static String hostIPAddress = "127.0.0.1";
+	private static String hostIPAddress = "10.147.112.234";
 	private static int hostPortNumber = 5000;
 	private static String username;
 	private static String password;
@@ -305,6 +305,7 @@ public class ClientMain extends Application {
 								if(action.equals("online")){
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
+									javafx.application.Platform.runLater(() -> n.getItems().clear());
 									for(String u : message.split(";", 3)[2].split(";")){
 										if(!u.equals(username)){
 											javafx.application.Platform.runLater(() -> n.getItems().add(u));

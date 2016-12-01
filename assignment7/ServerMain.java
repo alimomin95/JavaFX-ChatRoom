@@ -347,6 +347,23 @@ public class ServerMain extends Observable {
                     individualPrinters.remove(username);
                     deleteObserver(onlineUsers.get(username));
                     onlineUsers.remove(username);
+
+                    String userlist = "@USER;online";
+                    List<String> li = new ArrayList<>(onlineUsers.keySet());
+
+                    System.out.println("Online users: " + li);
+                    int lengthli = li.size();
+                    for(int i = 0; i < lengthli; i ++){
+                        String temp = userlist + ";" + li.get(i);
+                        userlist = temp;
+                    }
+                    System.out.println("Username: " + username);
+//                    PrintWriter w = individualPrinters.get(username);
+//                    w.println(userlist);
+//                    w.flush();
+                    setChanged();
+                    notifyObservers(userlist);
+                    clearChanged();
                 }
 			}
 
