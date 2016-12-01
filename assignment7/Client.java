@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -66,6 +67,9 @@ public class Client extends Application {
 	public ScrollPane chatListPane;
 
 	public Parent root;
+	
+	public static Socket socket;
+	public static Thread readerThread;
 
 	// login GUI components
 	@FXML
@@ -223,10 +227,12 @@ public class Client extends Application {
 	
 		
 		primaryStage.show();
-
-
+		
+		chatListView.getItems().add("Global");
+		chats.add("Global");
+		chatText.put("Global", "");
 	}
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		root = FXMLLoader.load(getClass().getResource("mainscene.fxml"));
@@ -244,7 +250,7 @@ public class Client extends Application {
 	}
 
 	private void setUpNetworking() throws Exception {
-		Socket socket = new Socket(hostIPAddress, hostPortNumber);
+		socket = new Socket(hostIPAddress, hostPortNumber);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new PrintWriter(socket.getOutputStream());
 		// Thread.sleep(20);
@@ -253,7 +259,7 @@ public class Client extends Application {
 		// writer.println("@REGISTER;" + username);
 		//writer.flush();
 		System.out.println("Networking established with " + hostIPAddress);
-		Thread readerThread = new Thread(new IncomingReader(root));
+		readerThread = new Thread(new IncomingReader(root));
 		readerThread.start();
 	}
 
@@ -270,7 +276,7 @@ public class Client extends Application {
 			try {
 				while ((message = reader.readLine()) != null) {
 					synchronized (this) {
-						System.out.println(message);
+						//System.out.println(message);
 						if (message.charAt(0) == '@') {
 							String[] split = message.split(";");
 							String command = split[0];
@@ -309,13 +315,13 @@ public class Client extends Application {
 								}
 								else if(action.equals("nowOnline")){
 									String u = split[2];
-									System.out.println(u);
+									//System.out.println(u);
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
 									n.getItems().add(u);
 								}
 								else if(action.equals("addfriend")){
-									System.out.println("adding: " + split[2]);
+									//System.out.println("adding: " + split[2]);
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#friendListID");
 									n.getItems().add(split[2]);
@@ -323,7 +329,7 @@ public class Client extends Application {
 								
 							} else if (command.equals("@ERROR")) {
 								String errormessage = split[1];
-								System.out.println(errormessage);
+								//System.out.println(errormessage);
 								//this adds the command to the javafx command queue ((I think??))
 								Platform.runLater(() -> AlertBox.display("Error", errormessage));
 								
@@ -362,9 +368,24 @@ public class Client extends Application {
 									}
 								}
 								else if(split[1].equals("history")){
-									String chat = split[2];
+									String c = split[2];
 									String m = message.split(";", 4)[3];
-									chatText.put(chat, m);
+		                            m = m.replace("%55", "\n");
+									//System.out.println(Arrays.toString(message.split(";", 4)));
+									//System.out.println("Message: " + m);
+									chats.add(c);
+									
+									
+									chatText.put(c, new String(m));
+									
+									@SuppressWarnings("unchecked")
+									ListView<String> chatlistview = (ListView<String>) root.lookup("#chatListViewID");
+									chatlistview.getItems().add(c);
+									if(currentChat.equals(c)){
+										TextArea o = (TextArea) root.lookup("#convoBox");
+										//n.setText(oldMessage + user + ": " + servedMessage + "\n");
+										o.setText(chatText.get(c));
+									}
 								}
 							}
 						}
@@ -384,19 +405,15 @@ public class Client extends Application {
 	// private ArrayList<String> chats = new ArrayList<>();
 	// private HashMap<String, String> chatText = new HashMap<>();
 	// the logout button is for debugging right now
-	private int f = 0;
 
+	@SuppressWarnings("deprecation")
 	@FXML
-	public void logoutOnClick() {
-		/*
-		 * f++; chatListView.getItems().add("test" + f);
-		 * writer.println("@CHATS;" + "test" + f + ";" + username);
-		 * writer.flush(); chats.add("test" + f); chatText.put("test" + f, new
-		 * String(""));
-		 */
-		f++;
-		friendsListView.getItems().add(chatName.getText());
-
+	public void logoutOnClick() throws IOException {
+		writer.println("@LOGOUT;" + username);
+		writer.flush();
+		readerThread.stop();
+		socket.close();
+		System.exit(0);
 	}
 
 	@FXML

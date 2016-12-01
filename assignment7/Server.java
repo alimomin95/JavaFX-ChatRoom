@@ -44,7 +44,6 @@ public class Server extends Observable {
     private void setUpNetworking() throws Exception{
         ServerSocket serverSocket = new ServerSocket(5000);
         String message;
-        loginMap.put("quinn", "password");
         while(true){
             Socket clientSocket = serverSocket.accept();
             PrintWriter printWriter = new PrintWriter(clientSocket.getOutputStream());
@@ -166,7 +165,7 @@ public class Server extends Observable {
                         	System.out.println("new chat created");
                             c = new ChatObserver();
                             currentChats.put(chat, c);
-                            historyOfChats.put(chat, null);
+                            historyOfChats.put(chat, "");
                             System.out.println(Arrays.toString(message.split(";", 4)));
                             String[] userlist = message.split(";", 4)[3].split(";"); //lol
                             for(String user : userlist){
@@ -308,6 +307,7 @@ public class Server extends Observable {
                         ArrayList<String> userchats = usersChats.get(username);
                         for(String c: userchats){
                             String chatText = historyOfChats.get(c);
+                            chatText = chatText.replace("\n", "%55");
                             String chistory = "@SERVER;history;" + c + ";" + chatText;
                             w.println(chistory);
                             w.flush();
@@ -333,10 +333,12 @@ public class Server extends Observable {
                     ClientObserver observer = onlineUsers.get(username);
                     ArrayList<String> chatlist = usersChats.get(username);
                     for(String c: chatlist){
+                    	System.out.println(c);
                         ChatObserver o = currentChats.get(c);
                         o.deleteObserver(observer);
                     }
                     individualPrinters.remove(username);
+                    deleteObserver(onlineUsers.get(username));
                     onlineUsers.remove(username);
                 }
 			}
