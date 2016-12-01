@@ -263,10 +263,14 @@ public class Server extends Observable {
 			
 					}
 					else if(split[1].equals("addfriend")){
+						System.out.println("adding friend server " + split[3]);
+						String username2 = split[2];
 					    String friend = split[3];
-			            friendList.get(username).add(friend);
+			            friendList.get(username2).add(friend);
+			            friendList.get(friend).add(username2);
 			            //@USER;addfriend;username;friendname
-                        individualPrinters.get(friend).write("@USER;addfriend;" + username);
+			            
+                        individualPrinters.get(friend).println("@USER;addfriend;" + username2);
                         individualPrinters.get(friend).flush();
 					}
 					else if(split[1].equals("remove")){
@@ -292,8 +296,10 @@ public class Server extends Observable {
                         int lengthm = m.size();
                         for(int i = 0; i < lengthm; i ++){
                             if(!(username.equals(m.get(i)))) {
-                                String temp = friendlist + ";" + m.get(i);
-                                friendlist = temp;
+                            	if(friendList.get(username).contains(m.get(i))){
+                                	String temp = friendlist + ";" + m.get(i);
+                                	friendlist = temp;
+                            	}
                             }
                         }
                         w.println(friendlist);
