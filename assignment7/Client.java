@@ -315,9 +315,10 @@ public class Client extends Application {
 									n.getItems().add(u);
 								}
 								else if(action.equals("addfriend")){
+									System.out.println("adding: " + split[2]);
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#friendListID");
-									n.getItems().add(split[3]);
+									n.getItems().add(split[2]);
 								}
 								
 							} else if (command.equals("@ERROR")) {
@@ -351,11 +352,13 @@ public class Client extends Application {
 							}
 							else if (command.equals("@SERVER")){
 								if(split[1].equals("friends")){
-									String[] friendslist = message.split(";", 3)[2].split(";");
-									@SuppressWarnings("unchecked")
-									ListView<String> n = (ListView<String>) root.lookup("#friendListID");
-									for(String u : friendslist){
-										n.getItems().add(u);
+									if(split.length > 2){
+										String[] friendslist = message.split(";", 3)[2].split(";");
+										@SuppressWarnings("unchecked")
+										ListView<String> n = (ListView<String>) root.lookup("#friendListID");
+										for(String u : friendslist){
+											n.getItems().add(u);
+										}
 									}
 								}
 								else if(split[1].equals("history")){
@@ -464,6 +467,7 @@ public class Client extends Application {
 		if(contextButton.getText().equals("Add friend")){
 			friendsListView.getItems().add(currentPerson);
 			writer.println("@USER;addfriend;" + username + ";" + currentPerson);
+			writer.flush();
 		}
 		else if(contextButton.getText().equals("Make chat")){
 
