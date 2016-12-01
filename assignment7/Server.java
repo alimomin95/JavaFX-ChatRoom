@@ -265,7 +265,7 @@ public class Server extends Observable {
 					else if(split[1].equals("addfriend")){
 					    String friend = split[3];
 			            friendList.get(username).add(friend);
-			            //@USER;addfriend;friendname
+			            //@USER;addfriend;username;friendname
                         individualPrinters.get(friend).write("@USER;addfriend;" + username);
                         individualPrinters.get(friend).flush();
 					}

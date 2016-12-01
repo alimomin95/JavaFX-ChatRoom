@@ -96,11 +96,7 @@ public class Client extends Application {
 	@FXML
 	public TextField chatName;
 	@FXML
-	public Tab onlineTab;
-	@FXML
-	public Tab friendsTab;
-	@FXML
-	public Tab chatsTab;
+	public TabPane tabPane;
 	// ----------------------------------------------------------------------------------------
 
 	// -------------------------------- GUI Variables:
@@ -172,6 +168,23 @@ public class Client extends Application {
 			};
 			friendsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			friendsListView.getSelectionModel().getSelectedItems().addListener(multiSelection);
+			
+			
+	        tabPane.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)->{
+	        	String m = "";
+	        	if(nv.getText().equals("Online")){
+	        		m = "Add friend";
+	        	}
+	        	else if(nv.getText().equals("Friends")){
+	        		m = "Make chat";
+	        	}
+	        	else if(nv.getText().equals("Chats")){
+	        		m = "Delete chat";
+	        	}
+	            contextButton.setText(m);
+	        });
+
+			
 		} catch (Exception e) {
 		}
 
@@ -300,6 +313,11 @@ public class Client extends Application {
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
 									n.getItems().add(u);
+								}
+								else if(action.equals("addfriend")){
+									@SuppressWarnings("unchecked")
+									ListView<String> n = (ListView<String>) root.lookup("#friendListID");
+									n.getItems().add(split[3]);
 								}
 								
 							} else if (command.equals("@ERROR")) {
@@ -443,9 +461,9 @@ public class Client extends Application {
 	
 	@FXML
 	public void contextOnClick() {
-		if(contextButton.getText().equals("Add Friend")){
+		if(contextButton.getText().equals("Add friend")){
 			friendsListView.getItems().add(currentPerson);
-			writer.println("@USER;addfriend;" + currentPerson);
+			writer.println("@USER;addfriend;" + username + ";" + currentPerson);
 		}
 		else if(contextButton.getText().equals("Make chat")){
 
