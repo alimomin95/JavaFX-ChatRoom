@@ -66,14 +66,7 @@ public class Server extends Observable {
                                 individualPrinters.put(username, printWriter);
                                 onlineUsers.put(username, writer);
                                 //Below notifies the current logged in users that a new user came online
-                                String userlist = "@USER;nowOnline";
-                                List<String> l = new ArrayList<>(onlineUsers.keySet());
-                                System.out.println(l);
-                                int length = l.size();
-                                for(int i = 0; i < length; i ++){
-                                    String temp = userlist + ";" + l.get(i);
-                                    userlist = temp;
-                                }
+                                String userlist = "@USER;nowOnline;" + username;
                                 this.setChanged();
                                 this.notifyObservers(userlist);
                                 this.clearChanged();
