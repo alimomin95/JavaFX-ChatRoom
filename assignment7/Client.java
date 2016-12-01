@@ -92,9 +92,15 @@ public class Client extends Application {
 	@FXML
 	private ListView<String> friendsListView;
 	@FXML
-	private Button makeChat;
+	public Button contextButton;
 	@FXML
-	private TextField chatName;
+	public TextField chatName;
+	@FXML
+	public Tab onlineTab;
+	@FXML
+	public Tab friendsTab;
+	@FXML
+	public Tab chatsTab;
 	// ----------------------------------------------------------------------------------------
 
 	// -------------------------------- GUI Variables:
@@ -109,6 +115,7 @@ public class Client extends Application {
 	private static ArrayList<String> chats = new ArrayList<>();
 	private static HashMap<String, String> chatText = new HashMap<>();
 	public static String currentChat = "";
+	public static String currentPerson = "";
 
 	private ArrayList<String> friendList = new ArrayList<String>();
 	private ArrayList<String> selectedPeople = new ArrayList<>();
@@ -130,18 +137,31 @@ public class Client extends Application {
 	public void initialize() {
 		try {
 			// chatListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+			
+			onlineListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> ov, final String oldvalue,
+						final String newvalue) {
+					currentPerson = new String(newvalue);
+				}
+			});
+
+			
 			chatListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(ObservableValue<? extends String> ov, final String oldvalue,
 						final String newvalue) {
-					System.out.println(newvalue);
+					
 					currentChat = new String(newvalue);
+					//convoBox.clear();
+					//for(String l : (chatText.get(newvalue)).split("\n")){
+						//convoBox.appendText(l + "\n");
+					//}
 					convoBox.setText(chatText.get(newvalue));
 				}
 			});
 
 			ListChangeListener<String> multiSelection = new ListChangeListener<String>() {
-
 				@Override
 				public void onChanged(javafx.collections.ListChangeListener.Change<? extends String> changed) {
 					selectedPeople.clear();
@@ -255,12 +275,13 @@ public class Client extends Application {
 							} else if (command.equals("@MESSAGE")) {
 								String chat = split[1];
 								String user = split[2];
-								String servedMessage = split[3];
+								String servedMessage = message.split(";", 4)[3];
 								String oldMessage = chatText.get(chat);
 								chatText.replace(chat, oldMessage + user + ": " + servedMessage + "\n");
 								if (currentChat.equals(chat)) {
 									TextArea n = (TextArea) root.lookup("#convoBox");
-									n.setText(oldMessage + user + ": " + servedMessage + "\n");
+									//n.setText(oldMessage + user + ": " + servedMessage + "\n");
+									n.appendText(user + ": " + servedMessage + "\n");
 								}
 							} else if(command.equals("@USER")){
 								String action = split[1];
@@ -268,12 +289,17 @@ public class Client extends Application {
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
 									for(String u : message.split(";", 3)[2].split(";")){
-										n.getItems().add(u);
+										if(!u.equals(username)){
+											n.getItems().add(u);
+										}
 									}
 								}
 								else if(action.equals("nowOnline")){
 									String u = split[2];
-									
+									System.out.println(u);
+									@SuppressWarnings("unchecked")
+									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
+									n.getItems().add(u);
 								}
 								
 							} else if (command.equals("@ERROR")) {
@@ -379,20 +405,6 @@ public class Client extends Application {
 		}
 	}
 
-	@FXML
-	public void makeChatOnClick() {
-		String message = "";
-		for (String s : selectedPeople) {
-			message = message + ";" + s;
-		}
-		if (!chatName.getText().isEmpty()) {
-			String c = chatName.getText();
-			//writer.println("@CHATS;new;" + c + ";" + username + message);
-			// writer.println("@CHATS;" + c + ";" + message);
-			writer.println(c);
-			writer.flush();
-		}
-	}
 
 	@FXML
 	public void loginOnClick(Event event) throws Exception {
@@ -413,4 +425,28 @@ public class Client extends Application {
 		writer.println("@REGISTER;" + username + ";" + password);
 		writer.flush();
 	}
+	
+	@FXML
+	public void contextOnClick() {
+		if(contextButton.getText().equals("Add Friend")){
+			friendsListView.getItems().add(currentPerson);
+			writer.println("@USER;addfriend;" + currentPerson);
+		}
+		else if(contextButton.getText().equals("Make chat")){
+
+			String message = "";
+			for (String s : selectedPeople) {
+				message = message + ";" + s;
+			}
+			if (!chatName.getText().isEmpty()) {
+				String c = chatName.getText();
+				writer.println("@CHATS;new;" + c + ";" + username + message);
+				// writer.println("@CHATS;" + c + ";" + message);
+				//writer.println(c);
+				writer.flush();
+			}
+		}
+	}
+
+	
 }

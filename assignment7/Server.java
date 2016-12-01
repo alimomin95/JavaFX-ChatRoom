@@ -265,7 +265,6 @@ public class Server extends Observable {
 					else if(split[1].equals("getOnlineUsers")){
 					    String userlist = "@USER;online";
 					    List<String> l = new ArrayList<>(onlineUsers.keySet());
-					    System.out.println("Online users: " + l);
 					    int length = l.size();
 					    for(int i = 0; i < length; i ++){
 					        String temp = userlist + ";" + l.get(i);
