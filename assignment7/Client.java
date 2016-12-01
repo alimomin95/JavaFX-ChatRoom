@@ -271,6 +271,10 @@ public class Client extends Application {
 										n.getItems().add(u);
 									}
 								}
+								else if(action.equals("nowOnline")){
+									String u = split[2];
+									
+								}
 								
 							} else if (command.equals("@ERROR")) {
 								String errormessage = split[1];
