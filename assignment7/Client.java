@@ -331,6 +331,21 @@ public class Client extends Application {
 									Platform.runLater(() -> AlertBox.display("Error", "Username already exists"));
 								}
 							}
+							else if (command.equals("@SERVER")){
+								if(split[1].equals("friends")){
+									String[] friendslist = message.split(";", 3)[2].split(";");
+									@SuppressWarnings("unchecked")
+									ListView<String> n = (ListView<String>) root.lookup("#friendListID");
+									for(String u : friendslist){
+										n.getItems().add(u);
+									}
+								}
+								else if(split[1].equals("history")){
+									String chat = split[2];
+									String m = message.split(";", 4)[3];
+									chatText.put(chat, m);
+								}
+							}
 						}
 					}
 				}

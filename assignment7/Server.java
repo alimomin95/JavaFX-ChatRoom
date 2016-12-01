@@ -309,9 +309,9 @@ public class Server extends Observable {
 				}
 				else if(split[0].equals("@MESSAGE")){
                     if(currentChats.containsKey(split[1])){
-                        String[] temp = message.split(";", 4)[3].split(";");
-                        String username = temp[2];
-                        String outgoing = temp[3];
+                        String temp = message.split(";", 4)[3];
+                        String username = split[2];
+                        String outgoing = temp;
                         historyOfChats.replace(split[1], historyOfChats.get(split[1]) + "\n" + username + ": "+ outgoing);
                         ChatObserver c = currentChats.get(split[1]);
                         c.changed();
