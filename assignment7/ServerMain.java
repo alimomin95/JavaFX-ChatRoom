@@ -74,6 +74,13 @@ public class ServerMain extends Observable {
                                 this.setChanged();
                                 this.notifyObservers(userlist);
                                 this.clearChanged();
+                                ClientObserver observer = onlineUsers.get(username);
+                                ArrayList<String> chatlist = usersChats.get(username);
+                                for(String c: chatlist){
+                                    System.out.println(c);
+                                    ChatObserver o = currentChats.get(c);
+                                    o.addObserver(observer);
+                                }
                                 break;
                             }
                             else{
