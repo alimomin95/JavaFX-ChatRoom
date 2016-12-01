@@ -297,7 +297,8 @@ public class Client extends Application {
 								if (currentChat.equals(chat)) {
 									TextArea n = (TextArea) root.lookup("#convoBox");
 									//n.setText(oldMessage + user + ": " + servedMessage + "\n");
-									n.appendText(user + ": " + servedMessage + "\n");
+									javafx.application.Platform.runLater(() -> n.appendText(user + ": " + servedMessage + "\n"));
+									
 								}
 							} else if(command.equals("@USER")){
 								String action = split[1];
@@ -306,7 +307,7 @@ public class Client extends Application {
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
 									for(String u : message.split(";", 3)[2].split(";")){
 										if(!u.equals(username)){
-											n.getItems().add(u);
+											javafx.application.Platform.runLater(() -> n.getItems().add(u));
 										}
 									}
 								}
