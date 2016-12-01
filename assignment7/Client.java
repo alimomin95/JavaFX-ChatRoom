@@ -167,7 +167,6 @@ public class Client extends Application {
 
 	// ---------------------------- This is for GUI functionality
 	// ------------------------------
-	// @Override
 	public void loggedIn(){
 		
 		//hostIPAddress = ((ipField.getText().isEmpty())?("127.0.0.1"):(ipField.getText()));
@@ -188,9 +187,9 @@ public class Client extends Application {
 		primaryStage.setResizable(false);
 		
 		loginStage.close();
-
+	
+		
 		primaryStage.show();
-
 
 
 	}
@@ -278,10 +277,13 @@ public class Client extends Application {
 								System.out.println(errormessage);
 								//this adds the command to the javafx command queue ((I think??))
 								Platform.runLater(() -> AlertBox.display("Error", errormessage));
+								
 							} else if (command.equals("@LOGIN")){
 								String state = split[1];
 								if (state.equals("successful")) {
 									Platform.runLater(() -> loggedIn());
+									writer.println("@USER;getOnlineUsers;" + username);
+									writer.flush();
 								} else if (state.equals("incorrectPassword")){
 									//AlertBox reason -- incorrect password
 									Platform.runLater(() -> AlertBox.display("Error", "Incorrect Password"));
@@ -390,9 +392,10 @@ public class Client extends Application {
 
 	@FXML
 	public void loginOnClick(Event event) throws Exception {
-		String username = usernameField.getText();
-		String password = passwordField.getText();
-		writer.println("@LOGIN;" + username + ";" + username);
+		username = usernameField.getText();
+		password = passwordField.getText();
+		System.out.println(username + " " + password);
+		writer.println("@LOGIN;" + username + ";" + password);
 		writer.flush();
 		//((Node) (event.getSource())).getScene().getWindow().hide();
 		//loggedIn(new Stage());
@@ -401,6 +404,9 @@ public class Client extends Application {
 
 	@FXML
 	public void registerOnClick() {
-
+		username = usernameField.getText();
+		password = passwordField.getText();
+		writer.println("@REGISTER;" + username + ";" + password);
+		writer.flush();
 	}
 }
