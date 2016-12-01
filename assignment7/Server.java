@@ -287,7 +287,7 @@ public class Server extends Observable {
                         w.println(userlist);
                         w.flush();
 
-                        String friendlist = "@SERVER;friends;";
+                        String friendlist = "@SERVER;friends";
                         List<String> m = new ArrayList<>(onlineUsers.keySet());
                         int lengthm = m.size();
                         for(int i = 0; i < lengthm; i ++){
