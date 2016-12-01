@@ -319,6 +319,19 @@ public class Server extends Observable {
                         c.unChanged();
                     }
 				}
+				else if (split[0].equals("@LOGOUT")){
+				    //@LOGOUT;username
+                    String username = split[1];
+                    ClientObserver observer = onlineUsers.get(username);
+                    ArrayList<String> chatlist = usersChats.get(username);
+                    for(String c: chatlist){
+                        ChatObserver o = currentChats.get(c);
+                        o.deleteObserver(observer);
+                    }
+                    individualPrinters.remove(username);
+                    onlineUsers.remove(username);
+                    
+                }
 			}
 
         }
