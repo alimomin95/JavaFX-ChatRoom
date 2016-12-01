@@ -374,7 +374,7 @@ public class ClientMain extends Application {
 									chats.add(c);
 									
 									
-									chatText.put(c, new String(m.trim()));
+									chatText.put(c, new String(m.trim()) + "\n");
 									
 									@SuppressWarnings("unchecked")
 									ListView<String> chatlistview = (ListView<String>) root.lookup("#chatListViewID");
