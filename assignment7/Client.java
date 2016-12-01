@@ -55,7 +55,8 @@ import javafx.collections.FXCollections;
  * Created by Ali Ziyaan Momin on 11/25/2016.
  */
 public class Client extends Application {
-	private static String hostIPAddress = "127.0.0.1";
+	//private static String hostIPAddress = "127.0.0.1";
+	private static String hostIPAddress = "10.145.84.177";
 	private static int hostPortNumber = 5000;
 	private static String username;
 	private static String password;
@@ -314,7 +315,7 @@ public class Client extends Application {
 									//System.out.println(u);
 									@SuppressWarnings("unchecked")
 									ListView<String> n = (ListView<String>) root.lookup("#onlineUserList");
-									n.getItems().add(u);
+									javafx.application.Platform.runLater(() -> n.getItems().add(u));
 								}
 								else if(action.equals("addfriend")){
 									//System.out.println("adding: " + split[2]);
@@ -376,11 +377,14 @@ public class Client extends Application {
 									
 									@SuppressWarnings("unchecked")
 									ListView<String> chatlistview = (ListView<String>) root.lookup("#chatListViewID");
-									chatlistview.getItems().add(c);
+									javafx.application.Platform.runLater(() -> chatlistview.getItems().add(c));
+
+									
 									if(currentChat.equals(c)){
 										TextArea o = (TextArea) root.lookup("#convoBox");
 										//n.setText(oldMessage + user + ": " + servedMessage + "\n");
-										o.setText(chatText.get(c));
+										javafx.application.Platform.runLater(() -> o.setText(chatText.get(c)));
+										
 									}
 								}
 							}
