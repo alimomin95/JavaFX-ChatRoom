@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class Server extends Observable {
     public HashMap<String, String> historyOfChats = new HashMap<>();
 
     public HashMap<String, ArrayList<String>> usersChats = new HashMap<>();
+
+    public HashMap<String, ArrayList<String>> friendList = new HashMap<>();
     
     public static void main(String[] args){
         try{
@@ -93,6 +96,8 @@ public class Server extends Observable {
                             loginMap.put(username, password);
                             printWriter.println("@REGISTER;successful");
                             printWriter.flush();
+                            usersChats.put(username, new ArrayList<String>());
+                            friendList.put(username, new ArrayList<String>());
                         }
                     }
                 }
@@ -165,6 +170,7 @@ public class Server extends Observable {
                             System.out.println(Arrays.toString(message.split(";", 4)));
                             String[] userlist = message.split(";", 4)[3].split(";"); //lol
                             for(String user : userlist){
+                                usersChats.get(user).add(chat);
                                 c.usersInChat.add(user);
                                 c.addObserver(onlineUsers.get(user));
                             }
@@ -256,8 +262,12 @@ public class Server extends Observable {
 					else if(split[1].equals("rename")){
 			
 					}
-					else if(split[1].equals("add")){
-			
+					else if(split[1].equals("addfriend")){
+					    String friend = split[3];
+			            friendList.get(username).add(friend);
+			            //@USER;addfriend;friendname
+                        individualPrinters.get(friend).write("@USER;addfriend;" + username);
+                        individualPrinters.get(friend).flush();
 					}
 					else if(split[1].equals("remove")){
 			
@@ -266,8 +276,8 @@ public class Server extends Observable {
 					    String userlist = "@USER;online";
 					    List<String> l = new ArrayList<>(onlineUsers.keySet());
 					    System.out.println("Online users: " + l);
-					    int length = l.size();
-					    for(int i = 0; i < length; i ++){
+					    int lengthl = l.size();
+					    for(int i = 0; i < lengthl; i ++){
 					        String temp = userlist + ";" + l.get(i);
 					        userlist = temp;
                         }
@@ -275,10 +285,34 @@ public class Server extends Observable {
                         PrintWriter w = individualPrinters.get(username);
                         w.println(userlist);
                         w.flush();
+
+                        String friendlist = "@SERVER;friends;";
+                        List<String> m = new ArrayList<>(onlineUsers.keySet());
+                        System.out.println("Online users: " + l);
+                        int lengthm = l.size();
+                        for(int i = 0; i < lengthm; i ++){
+                            String temp = friendlist + ";" + l.get(i);
+                            friendlist = temp;
+                        }
+                        w.println(friendlist);
+                        w.flush();
+
+                        ArrayList<String> userchats = usersChats.get(username);
+                        for(String c: userchats){
+                            String chatText = historyOfChats.get(c);
+                            String chistory = "@SERVER;history;" + c + ";" + chatText;
+                            w.println(chistory);
+                            w.flush();
+                        }
+
                     }
 				}
 				else if(split[0].equals("@MESSAGE")){
                     if(currentChats.containsKey(split[1])){
+                        String[] temp = message.split(";", 4)[3].split(";");
+                        String username = temp[2];
+                        String outgoing = temp[3];
+                        historyOfChats.replace(split[1], historyOfChats.get(split[1]) + "\n" + username + ": "+ outgoing);
                         ChatObserver c = currentChats.get(split[1]);
                         c.changed();
                         c.notifyObservers(message);
