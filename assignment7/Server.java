@@ -291,8 +291,10 @@ public class Server extends Observable {
                         List<String> m = new ArrayList<>(onlineUsers.keySet());
                         int lengthm = m.size();
                         for(int i = 0; i < lengthm; i ++){
-                            String temp = friendlist + ";" + l.get(i);
-                            friendlist = temp;
+                            if(!(username.equals(m.get(i))) {
+                                String temp = friendlist + ";" + m.get(i);
+                                friendlist = temp;
+                            }
                         }
                         w.println(friendlist);
                         w.flush();
