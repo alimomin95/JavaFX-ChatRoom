@@ -275,6 +275,7 @@ public class Server extends Observable {
 					else if(split[1].equals("getOnlineUsers")){
 					    String userlist = "@USER;online";
 					    List<String> l = new ArrayList<>(onlineUsers.keySet());
+
 					    System.out.println("Online users: " + l);
 					    int lengthl = l.size();
 					    for(int i = 0; i < lengthl; i ++){
@@ -288,8 +289,7 @@ public class Server extends Observable {
 
                         String friendlist = "@SERVER;friends;";
                         List<String> m = new ArrayList<>(onlineUsers.keySet());
-                        System.out.println("Online users: " + l);
-                        int lengthm = l.size();
+                        int lengthm = m.size();
                         for(int i = 0; i < lengthm; i ++){
                             String temp = friendlist + ";" + l.get(i);
                             friendlist = temp;
