@@ -37,7 +37,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="contextButton" layoutX="14.0" layoutY="424.0" mnemonicParsing="false" onAction="#contextOnClick" prefHeight="25.0" prefWidth="166.0" text="Add Friend" />
+      <Button fx:id="contextButton" layoutX="14.0" layoutY="424.0" mnemonicParsing="false" onAction="#contextOnClick" prefHeight="25.0" prefWidth="166.0" text="Add friend" />
       <TextField fx:id="chatName" layoutX="14.0" layoutY="456.0" prefHeight="25.0" prefWidth="166.0" />
    </children>
 </AnchorPane>
