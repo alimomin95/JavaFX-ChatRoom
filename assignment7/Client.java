@@ -227,11 +227,7 @@ public class Client extends Application {
 	
 		
 		primaryStage.show();
-		
-		chatListView.getItems().add("Global");
-		chats.add("Global");
-		chatText.put("Global", "");
-	}
+		}
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {

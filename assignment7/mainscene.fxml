@@ -18,7 +18,7 @@
          </content>
       </ScrollPane>
       <Button fx:id="logout" layoutX="569.0" layoutY="2.0" mnemonicParsing="false" onAction="#logoutOnClick" text="Logout" />
-      <TabPane layoutX="3.0" layoutY="-2.0" prefHeight="488.0" prefWidth="187.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutX="3.0" layoutY="-2.0" prefHeight="417.0" prefWidth="187.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab closable="false" text="Online">
                <content>
@@ -27,7 +27,7 @@
             </Tab>
             <Tab closable="false" text="Friends">
                <content>
-                  <ListView fx:id="friendsListView" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView id="friendListID" fx:id="friendsListView" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </Tab>
           <Tab closable="false" text="Chats">
@@ -37,7 +37,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="makeChat" layoutX="233.0" layoutY="2.0" mnemonicParsing="false" onAction="#makeChatOnClick" text="Make chat" />
-      <TextField fx:id="chatName" layoutX="304.0" layoutY="2.0" />
+      <Button fx:id="contextButton" layoutX="14.0" layoutY="424.0" mnemonicParsing="false" onAction="#contextOnClick" prefHeight="25.0" prefWidth="166.0" text="Add Friend" />
+      <TextField fx:id="chatName" layoutX="14.0" layoutY="456.0" prefHeight="25.0" prefWidth="166.0" />
    </children>
 </AnchorPane>
