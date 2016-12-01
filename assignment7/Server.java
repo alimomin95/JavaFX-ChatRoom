@@ -332,7 +332,6 @@ public class Server extends Observable {
                     }
                     individualPrinters.remove(username);
                     onlineUsers.remove(username);
-                    
                 }
 			}
 
