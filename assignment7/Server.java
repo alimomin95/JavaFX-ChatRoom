@@ -27,6 +27,8 @@ public class Server extends Observable {
     public HashMap<String, ChatObserver> currentChats = new HashMap<>();
 
     public HashMap<String, String> historyOfChats = new HashMap<>();
+
+    public HashMap<String, ArrayList<String>> usersChats = new HashMap<>();
     
     public static void main(String[] args){
         try{
