@@ -52,7 +52,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.collections.FXCollections;
 
 
-//quinn says: trying to make this show up on my github account
+// quinn says: trying to make this show up on my github account
 
 
 /**
